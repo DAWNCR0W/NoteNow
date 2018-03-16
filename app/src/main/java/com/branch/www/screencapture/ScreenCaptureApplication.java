@@ -8,20 +8,18 @@ import android.graphics.Bitmap;
  */
 public class ScreenCaptureApplication extends Application {
 
+    private Bitmap mScreenCaptureBitmap;
 
-  private Bitmap mScreenCaptureBitmap;
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
 
-  @Override
-  public void onCreate() {
-    super.onCreate();
-  }
+    public Bitmap getmScreenCaptureBitmap() {
+        return mScreenCaptureBitmap;
+    }
 
-
-  public Bitmap getmScreenCaptureBitmap() {
-    return mScreenCaptureBitmap;
-  }
-
-  public void setmScreenCaptureBitmap(Bitmap mScreenCaptureBitmap) {
-    this.mScreenCaptureBitmap = mScreenCaptureBitmap;
-  }
+    public void setmScreenCaptureBitmap(Bitmap mScreenCaptureBitmap) {
+        this.mScreenCaptureBitmap = mScreenCaptureBitmap;
+    }
 }

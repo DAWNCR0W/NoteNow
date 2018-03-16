@@ -12,59 +12,53 @@ import java.util.Date;
  */
 public class FileUtil {
 
-  //系统保存截图的路径
-  public static final String SCREENCAPTURE_PATH = "ScreenCapture" + File.separator + "Screenshots" + File.separator;
-//  public static final String SCREENCAPTURE_PATH = "ZAKER" + File.separator + "Screenshots" + File.separator;
+    private static final String SCREENCAPTURE_PATH = "ScreenCapture" + File.separator + "Screenshots" + File.separator;
 
-  public static final String SCREENSHOT_NAME = "Screenshot";
+    private static final String SCREENSHOT_NAME = "Screenshot";
 
-  public static String getAppPath(Context context) {
+    private static String getAppPath(Context context) {
 
-    if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
 
 
-      return Environment.getExternalStorageDirectory().toString();
+            return Environment.getExternalStorageDirectory().toString();
 
-    } else {
+        } else {
 
-      return context.getFilesDir().toString();
+            return context.getFilesDir().toString();
+        }
+
     }
 
-  }
+    private static String getScreenShots(Context context) {
 
+        StringBuilder stringBuffer = new StringBuilder(getAppPath(context));
+        stringBuffer.append(File.separator);
 
-  public static String getScreenShots(Context context) {
+        stringBuffer.append(SCREENCAPTURE_PATH);
 
-    StringBuffer stringBuffer = new StringBuffer(getAppPath(context));
-    stringBuffer.append(File.separator);
+        File file = new File(stringBuffer.toString());
 
-    stringBuffer.append(SCREENCAPTURE_PATH);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
 
-    File file = new File(stringBuffer.toString());
+        return stringBuffer.toString();
 
-    if (!file.exists()) {
-      file.mkdirs();
     }
 
-    return stringBuffer.toString();
+    public static String getScreenShotsName(Context context) {
 
-  }
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
 
-  public static String getScreenShotsName(Context context) {
+        String date = simpleDateFormat.format(new Date());
 
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
+        return getScreenShots(context) + SCREENSHOT_NAME +
+                "_" +
+                date +
+                ".png";
 
-    String date = simpleDateFormat.format(new Date());
-
-    StringBuffer stringBuffer = new StringBuffer(getScreenShots(context));
-    stringBuffer.append(SCREENSHOT_NAME);
-    stringBuffer.append("_");
-    stringBuffer.append(date);
-    stringBuffer.append(".png");
-
-    return stringBuffer.toString();
-
-  }
+    }
 
 
 }
