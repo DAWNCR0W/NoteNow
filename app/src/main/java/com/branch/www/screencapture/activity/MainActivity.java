@@ -1,5 +1,6 @@
 package com.branch.www.screencapture.activity;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.media.projection.MediaProjectionManager;
@@ -10,6 +11,7 @@ import com.branch.www.screencapture.service.FloatWindowsService;
 import com.branch.www.screencapture.R;
 
 public class MainActivity extends FragmentActivity {
+    public static Application application;
 
     public static final int REQUEST_MEDIA_PROJECTION = 18;
 
@@ -18,6 +20,8 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        application = getApplication();
+
         requestCapturePermission();
     }
 
@@ -25,10 +29,11 @@ public class MainActivity extends FragmentActivity {
         //스크린샷에 필요한 권한 요청
         MediaProjectionManager mediaProjectionManager = (MediaProjectionManager)
                 getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-        assert mediaProjectionManager != null;
-        startActivityForResult(
-                mediaProjectionManager.createScreenCaptureIntent(),
-                REQUEST_MEDIA_PROJECTION);
+        if (mediaProjectionManager != null) {
+            startActivityForResult(
+                    mediaProjectionManager.createScreenCaptureIntent(),
+                    REQUEST_MEDIA_PROJECTION);
+        }
     }
 
     @Override
@@ -38,10 +43,10 @@ public class MainActivity extends FragmentActivity {
 
         switch (requestCode) {
             case REQUEST_MEDIA_PROJECTION:
-
                 if (resultCode == RESULT_OK && data != null) {
                     FloatWindowsService.setResultData(data);
                     startService(new Intent(getApplicationContext(), FloatWindowsService.class));
+                    finish();
                 }
                 break;
         }

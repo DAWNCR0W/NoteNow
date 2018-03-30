@@ -5,8 +5,6 @@ import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
@@ -14,30 +12,20 @@ import android.media.Image;
 import android.media.ImageReader;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.v4.os.AsyncTaskCompat;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 
-import com.branch.www.screencapture.FileUtil;
-import com.branch.www.screencapture.activity.PreviewPictureActivity;
+import com.branch.www.screencapture.thread.ImageManageThread;
 import com.branch.www.screencapture.R;
-import com.branch.www.screencapture.ScreenCaptureApplication;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
 
 /**
  * Created by branch on 2016-5-25.
@@ -57,19 +45,91 @@ public class FloatWindowsService extends Service {
     private WindowManager.LayoutParams mLayoutParams;
     private GestureDetector mGestureDetector;
 
-    private ImageView mFloatView;
+    private ImageView noteBtn;
+
+    private Button captureBtn, exitBtn;
 
     private int mScreenWidth;
     private int mScreenHeight;
     private int mScreenDensity;
 
+    private float systemWidthDpi;
+
+    private int[] noteBtnPos = new int[2];
+
+    private boolean noteBtnClicked = false;
+
+    private Handler handler = new Handler();
+
+    private Runnable runDeleteBtn = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                mWindowManager.removeView(captureBtn);
+                mWindowManager.removeView(exitBtn);
+            } catch (IllegalArgumentException ignored) {
+            }
+            noteBtn.setImageResource(R.drawable.ic_create_black_24dp);
+            noteBtnClicked = false;
+        }
+    };
+
     @Override
     public void onCreate() {
         super.onCreate();
 
+        captureBtn = new Button(FloatWindowsService.this);
+
+        exitBtn = new Button(FloatWindowsService.this);
+
+        setOnClickListenersOnBtn();
+
         createFloatView();
 
         createImageReader();
+
+        getSystemSize();
+    }
+
+    private void setOnClickListenersOnBtn() {
+        captureBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mWindowManager.removeView(captureBtn);
+                mWindowManager.removeView(exitBtn);
+                noteBtn.setVisibility(View.GONE);
+                noteBtn.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        noteBtn.setImageResource(R.drawable.ic_create_black_24dp);
+                        noteBtn.setVisibility(View.VISIBLE);
+                    }
+                }, 1000);
+                noteBtnClicked = false;
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startScreenShot();
+                    }
+                }, 50);
+            }
+        });
+
+        exitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                handler.removeCallbacks(runDeleteBtn);
+                mWindowManager.removeView(captureBtn);
+                mWindowManager.removeView(exitBtn);
+                stopService(new Intent(FloatWindowsService.this, FloatWindowsService.class));
+            }
+        });
+    }
+
+    private void getSystemSize() {
+        final DisplayMetrics displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
+        systemWidthDpi = displayMetrics.widthPixels / displayMetrics.density;
     }
 
     public static void setResultData(Intent mResultData) {
@@ -94,26 +154,25 @@ public class FloatWindowsService extends Service {
 
         mLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
         mLayoutParams.format = PixelFormat.RGBA_8888;
-        // 设置Window flag
+        // Window flag
         mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                 | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         mLayoutParams.gravity = Gravity.START | Gravity.TOP;
         mLayoutParams.x = mScreenWidth;
         mLayoutParams.y = 100;
-        mLayoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        mLayoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        mLayoutParams.width = 100;
+        mLayoutParams.height = 100;
 
 
-        mFloatView = new ImageView(getApplicationContext());
-        mFloatView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_imagetool_crop));
-        mWindowManager.addView(mFloatView, mLayoutParams);
+        noteBtn = new ImageView(getApplicationContext());
+        noteBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_create_black_24dp));
+        mWindowManager.addView(noteBtn, mLayoutParams);
 
 
-        mFloatView.setOnTouchListener(new View.OnTouchListener() {
+        noteBtn.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return mGestureDetector.onTouchEvent(event);
-
             }
 
         });
@@ -140,18 +199,60 @@ public class FloatWindowsService extends Service {
 
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
-            startScreenShot();
+            noteBtn.getLocationOnScreen(noteBtnPos);
+            if (!noteBtnClicked) {
+                noteBtnClicked = true;
+                captureBtn.setBackgroundResource(R.drawable.ic_camera_alt_black_24dp);
+                exitBtn.setBackgroundResource(R.drawable.ic_cancel_black_24dp);
+                createBtns();
+            } else {
+                handler.removeCallbacks(runDeleteBtn);
+                mWindowManager.removeView(captureBtn);
+                mWindowManager.removeView(exitBtn);
+                noteBtn.setImageResource(R.drawable.ic_create_black_24dp);
+                noteBtnClicked = false;
+            }
             return true;
+        }
+
+        private void createBtns() {
+            if ((systemWidthDpi / 2) > noteBtnPos[0]) {
+                noteBtn.setImageResource(R.drawable.ic_undo_black_24dp);
+                mLayoutParams.x = noteBtnPos[0] + 100;
+                mLayoutParams.y = noteBtnPos[1] - 60;
+                mLayoutParams.width = 100;
+                mLayoutParams.height = 100;
+                mWindowManager.addView(captureBtn, mLayoutParams);
+
+                mLayoutParams.x = noteBtnPos[0] + 200;
+                mWindowManager.addView(exitBtn, mLayoutParams);
+                handler.removeCallbacks(runDeleteBtn);
+                handler.postDelayed(runDeleteBtn, 4000);
+
+            } else {
+                noteBtn.setImageResource(R.drawable.ic_undo_black_24dp);
+                mLayoutParams.x = noteBtnPos[0] - 100;
+                mLayoutParams.y = noteBtnPos[1] - 60;
+                mLayoutParams.width = 100;
+                mLayoutParams.height = 100;
+                mWindowManager.addView(captureBtn, mLayoutParams);
+
+                mLayoutParams.x = noteBtnPos[0] - 200;
+                mWindowManager.addView(exitBtn, mLayoutParams);
+                handler.removeCallbacks(runDeleteBtn);
+                handler.postDelayed(runDeleteBtn, 4000);
+            }
         }
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            int dx = (int) e2.getRawX() - lastX;
-            int dy = (int) e2.getRawY() - lastY;
-            mLayoutParams.x = paramX + dx;
-            mLayoutParams.y = paramY + dy;
-            // 更新悬浮窗位置
-            mWindowManager.updateViewLayout(mFloatView, mLayoutParams);
+            if (!noteBtnClicked) {
+                int dx = (int) e2.getRawX() - lastX;
+                int dy = (int) e2.getRawY() - lastY;
+                mLayoutParams.x = paramX + dx;
+                mLayoutParams.y = paramY + dy;
+                mWindowManager.updateViewLayout(noteBtn, mLayoutParams);
+            }
             return true;
         }
 
@@ -168,7 +269,7 @@ public class FloatWindowsService extends Service {
 
     private void startScreenShot() {
 
-        mFloatView.setVisibility(View.GONE);
+        noteBtn.setVisibility(View.GONE);
 
         Handler handler1 = new Handler();
         handler1.postDelayed(new Runnable() {
@@ -230,76 +331,7 @@ public class FloatWindowsService extends Service {
         if (image == null) {
             startScreenShot();
         } else {
-            SaveTask mSaveTask = new SaveTask();
-            AsyncTaskCompat.executeParallel(mSaveTask, image);
-        }
-    }
-
-    public class SaveTask extends AsyncTask<Image, Void, Bitmap> {
-
-        @Override
-        protected Bitmap doInBackground(Image... params) {
-
-            if (params == null || params.length < 1 || params[0] == null) {
-
-                return null;
-            }
-
-            Image image = params[0];
-
-            int width = image.getWidth();
-            int height = image.getHeight();
-            final Image.Plane[] planes = image.getPlanes();
-            final ByteBuffer buffer = planes[0].getBuffer();
-            //每个像素的间距
-            int pixelStride = planes[0].getPixelStride();
-            //总的间距
-            int rowStride = planes[0].getRowStride();
-            int rowPadding = rowStride - pixelStride * width;
-            Bitmap bitmap = Bitmap.createBitmap(width + rowPadding / pixelStride, height, Bitmap.Config.ARGB_8888);
-            bitmap.copyPixelsFromBuffer(buffer);
-            bitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height);
-            image.close();
-            File fileImage = null;
-            if (bitmap != null) {
-                try {
-                    fileImage = new File(FileUtil.getScreenShotsName(getApplicationContext()));
-                    if (!fileImage.exists()) {
-                        fileImage.createNewFile();
-                    }
-                    FileOutputStream out = new FileOutputStream(fileImage);
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-                    out.flush();
-                    out.close();
-                    Intent media = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                    Uri contentUri = Uri.fromFile(fileImage);
-                    media.setData(contentUri);
-                    sendBroadcast(media);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    fileImage = null;
-                }
-            }
-
-            if (fileImage != null) {
-                return bitmap;
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            super.onPostExecute(bitmap);
-
-            if (bitmap != null) {
-
-                ((ScreenCaptureApplication) getApplication()).setmScreenCaptureBitmap(bitmap);
-                Log.e("ryze", "获取图片成功");
-                startActivity(PreviewPictureActivity.newIntent(getApplicationContext()));
-            }
-
-            mFloatView.setVisibility(View.VISIBLE);
-
+            new ImageManageThread(noteBtn, FloatWindowsService.this, image).run();
         }
     }
 
@@ -322,13 +354,12 @@ public class FloatWindowsService extends Service {
     public void onDestroy() {
         // to remove mFloatLayout from windowManager
         super.onDestroy();
-        if (mFloatView != null) {
-            mWindowManager.removeView(mFloatView);
+        if (noteBtn != null) {
+            mWindowManager.removeView(noteBtn);
         }
         stopVirtual();
 
         tearDownMediaProjection();
     }
-
 
 }

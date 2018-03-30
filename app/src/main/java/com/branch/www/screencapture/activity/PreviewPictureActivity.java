@@ -48,7 +48,6 @@ public class PreviewPictureActivity extends FragmentActivity implements GlobalSc
 
     @Override
     public void onStartShot() {
-
     }
 
     @Override

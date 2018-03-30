@@ -20,12 +20,12 @@ public class FileUtil {
 
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
 
-
             return Environment.getExternalStorageDirectory().toString();
 
         } else {
 
             return context.getFilesDir().toString();
+
         }
 
     }

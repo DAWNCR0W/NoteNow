@@ -67,7 +67,7 @@
 
 >		private void startScreenShot() {
 >
->    		mFloatView.setVisibility(View.GONE);
+>    		noteBtn.setVisibility(View.GONE);
 >
 >    		Handler handler = new Handler();
 >    		handler.postDelayed(new Runnable() {
