@@ -104,7 +104,7 @@ public class GlobalScreenShot {
         // Setup the window that we are going to use
         mWindowLayoutParams = new WindowManager.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0, 0,
-                WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
                         | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
                         | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN

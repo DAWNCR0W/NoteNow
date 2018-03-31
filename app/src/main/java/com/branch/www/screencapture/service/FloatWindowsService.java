@@ -152,7 +152,7 @@ public class FloatWindowsService extends Service {
         mScreenWidth = metrics.widthPixels;
         mScreenHeight = metrics.heightPixels;
 
-        mLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
         mLayoutParams.format = PixelFormat.RGBA_8888;
         // Window flag
         mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL

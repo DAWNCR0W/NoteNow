@@ -5,13 +5,12 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.Image;
 import android.net.Uri;
-import android.util.Log;
 import android.view.View;
 
 import com.branch.www.screencapture.FileUtil;
 import com.branch.www.screencapture.ScreenCaptureApplication;
 import com.branch.www.screencapture.activity.MainActivity;
-import com.branch.www.screencapture.activity.PreviewPictureActivity;
+import com.branch.www.screencapture.activity.PaintActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -73,7 +72,7 @@ public class ImageManageThread extends Thread {
             public void run() {
                 if (finalFileImage != null) {
                     ((ScreenCaptureApplication) MainActivity.application).setmScreenCaptureBitmap(finalBitmap);
-                    context.startActivity(PreviewPictureActivity.newIntent(context));
+                    context.startActivity(PaintActivity.newIntent(context));
 
                     noteBtn.setVisibility(View.VISIBLE);
                 }
