@@ -27,6 +27,7 @@ import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.graphics.PointF;
 import android.media.MediaActionSound;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -89,9 +90,9 @@ public class GlobalScreenShot {
         // Inflate the screenshot layout
         assert layoutInflater != null;
         mScreenshotLayout = layoutInflater.inflate(R.layout.global_screenshot, null);
-        mBackgroundView = (ImageView) mScreenshotLayout.findViewById(R.id.global_screenshot_background);
-        mScreenshotView = (ImageView) mScreenshotLayout.findViewById(R.id.global_screenshot);
-        mScreenshotFlash = (ImageView) mScreenshotLayout.findViewById(R.id.global_screenshot_flash);
+        mBackgroundView = mScreenshotLayout.findViewById(R.id.global_screenshot_background);
+        mScreenshotView = mScreenshotLayout.findViewById(R.id.global_screenshot);
+        mScreenshotFlash = mScreenshotLayout.findViewById(R.id.global_screenshot_flash);
         mScreenshotLayout.setFocusable(true);
         mScreenshotLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -102,14 +103,24 @@ public class GlobalScreenShot {
         });
 
         // Setup the window that we are going to use
-        mWindowLayoutParams = new WindowManager.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0, 0,
-                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN
-                        | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
-                        | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                        | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED,
-                PixelFormat.TRANSLUCENT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            mWindowLayoutParams = new WindowManager.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0, 0,
+                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN
+                            | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
+                            | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                            | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED,
+                    PixelFormat.TRANSLUCENT);
+        else
+            mWindowLayoutParams = new WindowManager.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0, 0,
+                    WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN
+                            | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
+                            | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                            | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED,
+                    PixelFormat.TRANSLUCENT);
         mWindowLayoutParams.setTitle("ScreenshotAnimation");
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 

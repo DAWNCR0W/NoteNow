@@ -1,6 +1,5 @@
 package com.branch.www.screencapture.service;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
@@ -24,16 +23,15 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.branch.www.screencapture.thread.ImageManageThread;
 import com.branch.www.screencapture.R;
+import com.branch.www.screencapture.thread.ImageManage;
 
 /**
  * Created by branch on 2016-5-25.
  * <p>
  * 启动悬浮窗界面
  */
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class FloatWindowsService extends Service {
+public class FloatWindows extends Service {
 
     private MediaProjection mMediaProjection;
     private VirtualDisplay mVirtualDisplay;
@@ -78,9 +76,9 @@ public class FloatWindowsService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        captureBtn = new Button(FloatWindowsService.this);
+        captureBtn = new Button(FloatWindows.this);
 
-        exitBtn = new Button(FloatWindowsService.this);
+        exitBtn = new Button(FloatWindows.this);
 
         setOnClickListenersOnBtn();
 
@@ -122,18 +120,18 @@ public class FloatWindowsService extends Service {
                 handler.removeCallbacks(runDeleteBtn);
                 mWindowManager.removeView(captureBtn);
                 mWindowManager.removeView(exitBtn);
-                stopService(new Intent(FloatWindowsService.this, FloatWindowsService.class));
+                stopService(new Intent(FloatWindows.this, FloatWindows.class));
             }
         });
     }
 
     private void getSystemSize() {
-        final DisplayMetrics displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
+        final DisplayMetrics displayMetrics = FloatWindows.this.getResources().getDisplayMetrics();
         systemWidthDpi = displayMetrics.widthPixels / displayMetrics.density;
     }
 
     public static void setResultData(Intent mResultData) {
-        FloatWindowsService.mResultData = mResultData;
+        FloatWindows.mResultData = mResultData;
     }
 
     @Override
@@ -142,7 +140,7 @@ public class FloatWindowsService extends Service {
     }
 
     private void createFloatView() {
-        mGestureDetector = new GestureDetector(getApplicationContext(), new FloatGestrueTouchListener());
+        mGestureDetector = new GestureDetector(FloatWindows.this, new FloatGestureTouchListener());
         mLayoutParams = new WindowManager.LayoutParams();
         mWindowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
 
@@ -152,7 +150,10 @@ public class FloatWindowsService extends Service {
         mScreenWidth = metrics.widthPixels;
         mScreenHeight = metrics.heightPixels;
 
-        mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        else
+            mLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
         mLayoutParams.format = PixelFormat.RGBA_8888;
         // Window flag
         mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
@@ -163,9 +164,9 @@ public class FloatWindowsService extends Service {
         mLayoutParams.width = 100;
         mLayoutParams.height = 100;
 
+        noteBtn = new ImageView(FloatWindows.this);
+        noteBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_create_black_24dp, null));
 
-        noteBtn = new ImageView(getApplicationContext());
-        noteBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_create_black_24dp));
         mWindowManager.addView(noteBtn, mLayoutParams);
 
 
@@ -179,7 +180,7 @@ public class FloatWindowsService extends Service {
 
     }
 
-    private class FloatGestrueTouchListener implements GestureDetector.OnGestureListener {
+    private class FloatGestureTouchListener implements GestureDetector.OnGestureListener {
         int lastX, lastY;
         int paramX, paramY;
 
@@ -331,7 +332,7 @@ public class FloatWindowsService extends Service {
         if (image == null) {
             startScreenShot();
         } else {
-            new ImageManageThread(noteBtn, FloatWindowsService.this, image).run();
+            new ImageManage(getApplication(), FloatWindows.this, noteBtn, image).run();
         }
     }
 

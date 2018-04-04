@@ -1,5 +1,6 @@
 package com.branch.www.screencapture.thread;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,7 +10,6 @@ import android.view.View;
 
 import com.branch.www.screencapture.FileUtil;
 import com.branch.www.screencapture.ScreenCaptureApplication;
-import com.branch.www.screencapture.activity.MainActivity;
 import com.branch.www.screencapture.activity.PaintActivity;
 
 import java.io.File;
@@ -17,15 +17,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-public class ImageManageThread extends Thread {
+public class ImageManage extends Thread {
     private Image[] params;
     private Context context;
     private View noteBtn;
+    private Application application;
 
-    public ImageManageThread(View noteBtn, Context context, Image... params) {
-        this.params = params;
+    public ImageManage(Application application, Context context, View noteBtn, Image... params) {
         this.context = context;
+        this.application = application;
         this.noteBtn = noteBtn;
+        this.params = params;
     }
 
     @Override
@@ -71,9 +73,8 @@ public class ImageManageThread extends Thread {
             @Override
             public void run() {
                 if (finalFileImage != null) {
-                    ((ScreenCaptureApplication) MainActivity.application).setmScreenCaptureBitmap(finalBitmap);
+                    ((ScreenCaptureApplication) application).setmScreenCaptureBitmap(finalBitmap);
                     context.startActivity(PaintActivity.newIntent(context));
-
                     noteBtn.setVisibility(View.VISIBLE);
                 }
             }
