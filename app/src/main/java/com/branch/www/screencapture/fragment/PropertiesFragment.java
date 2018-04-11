@@ -14,9 +14,9 @@ import android.widget.SeekBar;
 import com.branch.www.screencapture.R;
 import com.branch.www.screencapture.adapter.ColorPicker;
 
-public class PropertiesBSFragment extends BottomSheetDialogFragment implements SeekBar.OnSeekBarChangeListener {
+public class PropertiesFragment extends BottomSheetDialogFragment implements SeekBar.OnSeekBarChangeListener {
 
-    public PropertiesBSFragment() {
+    public PropertiesFragment() {
         // Required empty public constructor
     }
 

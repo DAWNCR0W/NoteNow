@@ -123,7 +123,6 @@ public class TextEditorDialogFragment extends DialogFragment {
 
     }
 
-
     //Callback to listener if user is done with text editing
     public void setOnTextEditorListener(TextEditor textEditor) {
         mTextEditor = textEditor;

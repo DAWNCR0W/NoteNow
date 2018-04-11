@@ -56,6 +56,9 @@ public class FloatWindows extends Service {
     private int[] noteBtnPos = new int[2];
 
     private boolean noteBtnClicked = false;
+    private boolean noteBtnMoveCheck = false;
+
+    private int xPosWhenNoteBtnClicked = 0;
 
     private Handler handler = new Handler();
 
@@ -175,7 +178,6 @@ public class FloatWindows extends Service {
             public boolean onTouch(View v, MotionEvent event) {
                 return mGestureDetector.onTouchEvent(event);
             }
-
         });
 
     }
@@ -200,7 +202,9 @@ public class FloatWindows extends Service {
 
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
+            noteBtnMoveCheck = true;
             noteBtn.getLocationOnScreen(noteBtnPos);
+            xPosWhenNoteBtnClicked = noteBtnPos[0];
             if (!noteBtnClicked) {
                 noteBtnClicked = true;
                 captureBtn.setBackgroundResource(R.drawable.ic_camera_alt_black_24dp);
@@ -216,6 +220,32 @@ public class FloatWindows extends Service {
             return true;
         }
 
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            if (!noteBtnClicked) {
+                int dx = (int) e2.getRawX() - lastX;
+                int dy = (int) e2.getRawY() - lastY;
+                mLayoutParams.x = paramX + dx;
+                mLayoutParams.y = paramY + dy;
+                if (noteBtnMoveCheck)
+                    if (xPosWhenNoteBtnClicked > systemWidthDpi / 2)
+                        mLayoutParams.x += 200;
+                    else
+                        mLayoutParams.x -= 200;
+                mWindowManager.updateViewLayout(noteBtn, mLayoutParams);
+            }
+            return true;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            return false;
+        }
+
         private void createBtns() {
             if ((systemWidthDpi / 2) > noteBtnPos[0]) {
                 noteBtn.setImageResource(R.drawable.ic_undo_black_24dp);
@@ -229,7 +259,6 @@ public class FloatWindows extends Service {
                 mWindowManager.addView(exitBtn, mLayoutParams);
                 handler.removeCallbacks(runDeleteBtn);
                 handler.postDelayed(runDeleteBtn, 4000);
-
             } else {
                 noteBtn.setImageResource(R.drawable.ic_undo_black_24dp);
                 mLayoutParams.x = noteBtnPos[0] - 100;
@@ -243,28 +272,6 @@ public class FloatWindows extends Service {
                 handler.removeCallbacks(runDeleteBtn);
                 handler.postDelayed(runDeleteBtn, 4000);
             }
-        }
-
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            if (!noteBtnClicked) {
-                int dx = (int) e2.getRawX() - lastX;
-                int dy = (int) e2.getRawY() - lastY;
-                mLayoutParams.x = paramX + dx;
-                mLayoutParams.y = paramY + dy;
-                mWindowManager.updateViewLayout(noteBtn, mLayoutParams);
-            }
-            return true;
-        }
-
-        @Override
-        public void onLongPress(MotionEvent e) {
-
-        }
-
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            return false;
         }
     }
 
@@ -284,15 +291,12 @@ public class FloatWindows extends Service {
             public void run() {
                 //capture the screen
                 startCapture();
-
             }
         }, 30);
     }
 
     private void createImageReader() {
-
         mImageReader = ImageReader.newInstance(mScreenWidth, mScreenHeight, PixelFormat.RGBA_8888, 1);
-
     }
 
     public void startVirtual() {
@@ -315,7 +319,6 @@ public class FloatWindows extends Service {
     }
 
     private MediaProjectionManager getMediaProjectionManager() {
-
         return (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
     }
 

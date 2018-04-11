@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,14 +20,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.branch.www.screencapture.FileUtil;
 import com.branch.www.screencapture.GlobalScreenShot;
 import com.branch.www.screencapture.R;
 import com.branch.www.screencapture.ScreenCaptureApplication;
-import com.branch.www.screencapture.fragment.EmojiBSFragment;
-import com.branch.www.screencapture.fragment.PropertiesBSFragment;
-import com.branch.www.screencapture.fragment.StickerBSFragment;
+import com.branch.www.screencapture.fragment.EmojiFragment;
+import com.branch.www.screencapture.fragment.PropertiesFragment;
+import com.branch.www.screencapture.fragment.StickerFragment;
 import com.branch.www.screencapture.fragment.TextEditorDialogFragment;
 
 import java.io.File;
@@ -45,17 +45,17 @@ import ja.burhanrashid52.photoeditor.ViewType;
 public class PaintActivity extends BaseActivity implements GlobalScreenShot.onScreenShotListener,
         OnPhotoEditorListener,
         View.OnClickListener,
-        PropertiesBSFragment.Properties,
-        EmojiBSFragment.EmojiListener,
-        StickerBSFragment.StickerListener {
+        PropertiesFragment.Properties,
+        EmojiFragment.EmojiListener,
+        StickerFragment.StickerListener {
 
     private static final String TAG = PaintActivity.class.getSimpleName();
     private static final int CAMERA_REQUEST = 52;
     private static final int PICK_REQUEST = 53;
     private PhotoEditor mPhotoEditor;
-    private PropertiesBSFragment mPropertiesBSFragment;
-    private EmojiBSFragment mEmojiBSFragment;
-    private StickerBSFragment mStickerBSFragment;
+    private PropertiesFragment mPropertiesFragment;
+    private EmojiFragment mEmojiFragment;
+    private StickerFragment mStickerFragment;
     private TextView mTxtCurrentTool;
     private Typeface mWonderFont;
 
@@ -79,12 +79,12 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
 
         mWonderFont = Typeface.createFromAsset(getAssets(), "beyond _wonderland.ttf");
 
-        mPropertiesBSFragment = new PropertiesBSFragment();
-        mEmojiBSFragment = new EmojiBSFragment();
-        mStickerBSFragment = new StickerBSFragment();
-        mStickerBSFragment.setStickerListener(this);
-        mEmojiBSFragment.setEmojiListener(this);
-        mPropertiesBSFragment.setPropertiesChangeListener(this);
+        mPropertiesFragment = new PropertiesFragment();
+        mEmojiFragment = new EmojiFragment();
+        mStickerFragment = new StickerFragment();
+        mStickerFragment.setStickerListener(this);
+        mEmojiFragment.setEmojiListener(this);
+        mPropertiesFragment.setPropertiesChangeListener(this);
 
         Typeface mTextRobotoTf = ResourcesCompat.getFont(this, R.font.roboto_medium);
         Typeface mEmojiTypeFace = Typeface.createFromAsset(getAssets(), "emojione-android.ttf");
@@ -203,7 +203,7 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
             case R.id.imgPencil:
                 mPhotoEditor.setBrushDrawingMode(true);
                 mTxtCurrentTool.setText(R.string.label_brush);
-                mPropertiesBSFragment.show(getSupportFragmentManager(), mPropertiesBSFragment.getTag());
+                mPropertiesFragment.show(getSupportFragmentManager(), mPropertiesFragment.getTag());
                 break;
             case R.id.btnEraser:
                 mPhotoEditor.brushEraser();
@@ -241,11 +241,11 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
                 break;
 
             case R.id.imgSticker:
-                mStickerBSFragment.show(getSupportFragmentManager(), mStickerBSFragment.getTag());
+                mStickerFragment.show(getSupportFragmentManager(), mStickerFragment.getTag());
                 break;
 
             case R.id.imgEmoji:
-                mEmojiBSFragment.show(getSupportFragmentManager(), mEmojiBSFragment.getTag());
+                mEmojiFragment.show(getSupportFragmentManager(), mEmojiFragment.getTag());
                 break;
         }
     }
@@ -335,6 +335,8 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
     public void isPermissionGranted(boolean isGranted, String permission) {
         if (isGranted) {
             saveImage();
+        } else {
+            Toast.makeText(this, "권한이 없습니다. 앱을 다시 실행시켜 권한을 설정해 주세요!", Toast.LENGTH_SHORT).show();
         }
     }
 
