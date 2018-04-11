@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.branch.www.screencapture.R;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 
@@ -74,16 +75,17 @@ public class EmojiFragment extends BottomSheetDialogFragment {
 
     public class EmojiAdapter extends RecyclerView.Adapter<EmojiAdapter.ViewHolder> {
 
-        ArrayList<String> emojisList = PhotoEditor.getEmojis(getActivity());
+        ArrayList<String> emojisList = PhotoEditor.getEmojis(Objects.requireNonNull(getActivity()));
 
+        @NonNull
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_emoji, parent, false);
             return new ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             holder.txtEmoji.setText(emojisList.get(position));
         }
 

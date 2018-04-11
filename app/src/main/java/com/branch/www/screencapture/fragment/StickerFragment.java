@@ -87,14 +87,15 @@ public class StickerFragment extends BottomSheetDialogFragment {
                 R.drawable.sticker9, R.drawable.sticker10
         };
 
+        @NonNull
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_sticker, parent, false);
             return new ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             holder.imgSticker.setImageResource(stickerList[position]);
         }
 
@@ -123,20 +124,5 @@ public class StickerFragment extends BottomSheetDialogFragment {
                 });
             }
         }
-    }
-
-    private String convertEmoji(String emoji) {
-        String returnedEmoji;
-        try {
-            int convertEmojiToInt = Integer.parseInt(emoji.substring(2), 16);
-            returnedEmoji = getEmojiByUnicode(convertEmojiToInt);
-        } catch (NumberFormatException e) {
-            returnedEmoji = "";
-        }
-        return returnedEmoji;
-    }
-
-    private String getEmojiByUnicode(int unicode) {
-        return new String(Character.toChars(unicode));
     }
 }

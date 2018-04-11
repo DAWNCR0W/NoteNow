@@ -33,6 +33,8 @@ import com.branch.www.screencapture.thread.ImageManage;
  */
 public class FloatWindows extends Service {
 
+    public static boolean noteBtnMoveCheck = false;
+
     private MediaProjection mMediaProjection;
     private VirtualDisplay mVirtualDisplay;
 
@@ -56,7 +58,6 @@ public class FloatWindows extends Service {
     private int[] noteBtnPos = new int[2];
 
     private boolean noteBtnClicked = false;
-    private boolean noteBtnMoveCheck = false;
 
     private int xPosWhenNoteBtnClicked = 0;
 
@@ -83,13 +84,14 @@ public class FloatWindows extends Service {
 
         exitBtn = new Button(FloatWindows.this);
 
+        getSystemSize();
+
         setOnClickListenersOnBtn();
 
         createFloatView();
 
         createImageReader();
 
-        getSystemSize();
     }
 
     private void setOnClickListenersOnBtn() {
@@ -279,6 +281,8 @@ public class FloatWindows extends Service {
 
         noteBtn.setVisibility(View.GONE);
 
+        noteBtnMoveCheck = false;
+
         Handler handler1 = new Handler();
         handler1.postDelayed(new Runnable() {
             public void run() {
@@ -365,5 +369,4 @@ public class FloatWindows extends Service {
 
         tearDownMediaProjection();
     }
-
 }

@@ -30,6 +30,7 @@ import com.branch.www.screencapture.fragment.EmojiFragment;
 import com.branch.www.screencapture.fragment.PropertiesFragment;
 import com.branch.www.screencapture.fragment.StickerFragment;
 import com.branch.www.screencapture.fragment.TextEditorDialogFragment;
+import com.branch.www.screencapture.service.FloatWindows;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,6 +71,7 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FloatWindows.noteBtnMoveCheck = true;
         super.onCreate(savedInstanceState);
         makeFullScreen();
         setContentView(R.layout.activity_edit_image);
@@ -114,7 +116,6 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
 
     @Override
     public void onStartShot() {
-
     }
 
     @Override
@@ -236,6 +237,7 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
                 if (!mPhotoEditor.isCacheEmpty()) {
                     showSaveDialog();
                 } else {
+                    FloatWindows.noteBtnMoveCheck = false;
                     finishAffinity();
                 }
                 break;
@@ -253,7 +255,7 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
     @SuppressLint("MissingPermission")
     private void saveImage() {
         if (requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            showLoading("저장중...");
+            showLoading();
             File file = new File(FileUtil.getEditedScreencapture(PaintActivity.this));
             try {
                 file.createNewFile();
@@ -342,23 +344,24 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
 
     private void showSaveDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Are you want to exit without saving image ?");
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+        builder.setMessage("저장하지 않고 종료 하시겠습니까?");
+        builder.setPositiveButton("저장", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 saveImage();
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
         });
 
-        builder.setNeutralButton("Discard", new DialogInterface.OnClickListener() {
+        builder.setNeutralButton("저장하지 않고 종료", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                FloatWindows.noteBtnMoveCheck = false;
                 finishAffinity();
             }
         });

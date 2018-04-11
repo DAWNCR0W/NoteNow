@@ -14,6 +14,8 @@ import android.widget.SeekBar;
 import com.branch.www.screencapture.R;
 import com.branch.www.screencapture.adapter.ColorPicker;
 
+import java.util.Objects;
+
 public class PropertiesFragment extends BottomSheetDialogFragment implements SeekBar.OnSeekBarChangeListener {
 
     public PropertiesFragment() {
@@ -36,7 +38,7 @@ public class PropertiesFragment extends BottomSheetDialogFragment implements See
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_bottom_properties_dialog, container, false);
     }
 
@@ -53,7 +55,7 @@ public class PropertiesFragment extends BottomSheetDialogFragment implements See
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         rvColor.setLayoutManager(layoutManager);
         rvColor.setHasFixedSize(true);
-        ColorPicker colorPickerAdapter = new ColorPicker(getActivity());
+        ColorPicker colorPickerAdapter = new ColorPicker(Objects.requireNonNull(getActivity()));
         colorPickerAdapter.setOnColorPickerClickListener(new ColorPicker.OnColorPickerClickListener() {
             @Override
             public void onColorPickerClickListener(int colorCode) {

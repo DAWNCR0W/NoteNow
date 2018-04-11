@@ -23,6 +23,8 @@ import android.widget.TextView;
 import com.branch.www.screencapture.R;
 import com.branch.www.screencapture.adapter.ColorPicker;
 
+import java.util.Objects;
+
 /**
  * Created by Burhanuddin Rashid on 1/16/2018.
  */
@@ -70,22 +72,22 @@ public class TextEditorDialogFragment extends DialogFragment {
         if (dialog != null) {
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
-            dialog.getWindow().setLayout(width, height);
+            Objects.requireNonNull(dialog.getWindow()).setLayout(width, height);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         }
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.add_text_dialog, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mAddTextEditText = view.findViewById(R.id.add_text_edit_text);
-        mInputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        mInputMethodManager = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(Context.INPUT_METHOD_SERVICE);
         mAddTextDoneTextView = view.findViewById(R.id.add_text_done_tv);
 
         //Setup the color picker for text color
@@ -103,7 +105,7 @@ public class TextEditorDialogFragment extends DialogFragment {
             }
         });
         addTextColorPickerRecyclerView.setAdapter(colorPickerAdapter);
-        mAddTextEditText.setText(getArguments().getString(EXTRA_INPUT_TEXT));
+        mAddTextEditText.setText(Objects.requireNonNull(getArguments()).getString(EXTRA_INPUT_TEXT));
         mColorCode = getArguments().getInt(EXTRA_COLOR_CODE);
         mAddTextEditText.setTextColor(mColorCode);
         mInputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);

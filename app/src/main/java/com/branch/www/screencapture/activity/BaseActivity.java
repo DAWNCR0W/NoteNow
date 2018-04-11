@@ -29,7 +29,6 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void isPermissionGranted(boolean isGranted, String permission) {
-
     }
 
     public void makeFullScreen() {
@@ -46,9 +45,9 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    void showLoading(@NonNull String message) {
+    void showLoading() {
         mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setMessage(message);
+        mProgressDialog.setMessage("저장중...");
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         mProgressDialog.setCancelable(false);
         mProgressDialog.show();
