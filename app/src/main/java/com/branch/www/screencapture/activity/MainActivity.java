@@ -66,7 +66,9 @@ public class MainActivity extends FragmentActivity {
             case REQUEST_MEDIA_PROJECTION:
                 if (resultCode == RESULT_OK && data != null) {
                     FloatWindows.setResultData(data);
-                    startService(new Intent(MainActivity.this, FloatWindows.class));
+                    Intent i = new Intent(MainActivity.this, FloatWindows.class);
+                    i.putExtra("Selected color", "blue");
+                    startService(i);
                     finish();
                 }
                 break;

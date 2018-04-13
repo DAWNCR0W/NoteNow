@@ -36,8 +36,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
@@ -60,7 +58,6 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
     private TextView mTxtCurrentTool;
     private Typeface mWonderFont;
 
-    @BindView(R.id.photoEditorView)
     PhotoEditorView mPhotoEditorView;
 
     public static Intent newIntent(Context context) {
@@ -75,7 +72,7 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
         stopService(new Intent(PaintActivity.this, FloatWindows.class));
         makeFullScreen();
         setContentView(R.layout.activity_edit_image);
-        ButterKnife.bind(this);
+        mPhotoEditorView = findViewById(R.id.photoEditorView);
 
         initViews();
 

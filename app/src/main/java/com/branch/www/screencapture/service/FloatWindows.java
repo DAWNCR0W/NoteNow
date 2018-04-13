@@ -15,17 +15,13 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageView;
 
 import com.branch.www.screencapture.R;
-import com.branch.www.screencapture.activity.PaintActivity;
 import com.branch.www.screencapture.thread.ImageManage;
 
 /**
