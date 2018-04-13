@@ -71,8 +71,8 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FloatWindows.noteBtnMoveCheck = true;
         super.onCreate(savedInstanceState);
+        stopService(new Intent(PaintActivity.this, FloatWindows.class));
         makeFullScreen();
         setContentView(R.layout.activity_edit_image);
         ButterKnife.bind(this);
@@ -237,7 +237,6 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
                 if (!mPhotoEditor.isCacheEmpty()) {
                     showSaveDialog();
                 } else {
-                    FloatWindows.noteBtnMoveCheck = false;
                     finishAffinity();
                 }
                 break;
@@ -361,7 +360,6 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
         builder.setNeutralButton("저장하지 않고 종료", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                FloatWindows.noteBtnMoveCheck = false;
                 finishAffinity();
             }
         });
@@ -377,5 +375,11 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
                     READ_WRITE_STORAGE);
         }
         return isGranted;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        startService(new Intent(PaintActivity.this, FloatWindows.class));
     }
 }

@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -24,6 +25,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.branch.www.screencapture.R;
+import com.branch.www.screencapture.activity.PaintActivity;
 import com.branch.www.screencapture.thread.ImageManage;
 
 /**
@@ -33,7 +35,9 @@ import com.branch.www.screencapture.thread.ImageManage;
  */
 public class FloatWindows extends Service {
 
-    public static boolean noteBtnMoveCheck = false;
+    private boolean noteBtnMoving = false;
+
+    private float offsetX, offsetY;
 
     private MediaProjection mMediaProjection;
     private VirtualDisplay mVirtualDisplay;
@@ -43,9 +47,8 @@ public class FloatWindows extends Service {
     private ImageReader mImageReader;
     private WindowManager mWindowManager;
     private WindowManager.LayoutParams mLayoutParams;
-    private GestureDetector mGestureDetector;
 
-    private ImageView noteBtn;
+    private Button noteBtn;
 
     private Button captureBtn, exitBtn;
 
@@ -59,8 +62,6 @@ public class FloatWindows extends Service {
 
     private boolean noteBtnClicked = false;
 
-    private int xPosWhenNoteBtnClicked = 0;
-
     private Handler handler = new Handler();
 
     private Runnable runDeleteBtn = new Runnable() {
@@ -71,7 +72,7 @@ public class FloatWindows extends Service {
                 mWindowManager.removeView(exitBtn);
             } catch (IllegalArgumentException ignored) {
             }
-            noteBtn.setImageResource(R.drawable.ic_create_black_24dp);
+            noteBtn.setBackgroundResource(R.drawable.ic_create_black_24dp);
             noteBtnClicked = false;
         }
     };
@@ -104,7 +105,7 @@ public class FloatWindows extends Service {
                 noteBtn.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        noteBtn.setImageResource(R.drawable.ic_create_black_24dp);
+                        noteBtn.setBackgroundResource(R.drawable.ic_create_black_24dp);
                         noteBtn.setVisibility(View.VISIBLE);
                     }
                 }, 1000);
@@ -145,7 +146,6 @@ public class FloatWindows extends Service {
     }
 
     private void createFloatView() {
-        mGestureDetector = new GestureDetector(FloatWindows.this, new FloatGestureTouchListener());
         mLayoutParams = new WindowManager.LayoutParams();
         mWindowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
 
@@ -169,44 +169,20 @@ public class FloatWindows extends Service {
         mLayoutParams.width = 100;
         mLayoutParams.height = 100;
 
-        noteBtn = new ImageView(FloatWindows.this);
-        noteBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_create_black_24dp, null));
+        noteBtn = new Button(FloatWindows.this);
+        noteBtn.setBackgroundResource(R.drawable.ic_create_black_24dp);
 
         mWindowManager.addView(noteBtn, mLayoutParams);
 
-
-        noteBtn.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return mGestureDetector.onTouchEvent(event);
-            }
-        });
+        noteBtn.setOnTouchListener(new NoteBtnListener());
+        noteBtn.setOnClickListener(new NoteBtnListener());
 
     }
 
-    private class FloatGestureTouchListener implements GestureDetector.OnGestureListener {
-        int lastX, lastY;
-        int paramX, paramY;
-
+    private class NoteBtnListener implements View.OnClickListener, View.OnTouchListener {
         @Override
-        public boolean onDown(MotionEvent event) {
-            lastX = (int) event.getRawX();
-            lastY = (int) event.getRawY();
-            paramX = mLayoutParams.x;
-            paramY = mLayoutParams.y;
-            return true;
-        }
-
-        @Override
-        public void onShowPress(MotionEvent e) {
-
-        }
-
-        @Override
-        public boolean onSingleTapUp(MotionEvent e) {
-            noteBtnMoveCheck = true;
+        public void onClick(View view) {
             noteBtn.getLocationOnScreen(noteBtnPos);
-            xPosWhenNoteBtnClicked = noteBtnPos[0];
             if (!noteBtnClicked) {
                 noteBtnClicked = true;
                 captureBtn.setBackgroundResource(R.drawable.ic_camera_alt_black_24dp);
@@ -216,41 +192,52 @@ public class FloatWindows extends Service {
                 handler.removeCallbacks(runDeleteBtn);
                 mWindowManager.removeView(captureBtn);
                 mWindowManager.removeView(exitBtn);
-                noteBtn.setImageResource(R.drawable.ic_create_black_24dp);
+                noteBtn.setBackgroundResource(R.drawable.ic_create_black_24dp);
                 noteBtnClicked = false;
             }
-            return true;
         }
 
         @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            if (!noteBtnClicked) {
-                int dx = (int) e2.getRawX() - lastX;
-                int dy = (int) e2.getRawY() - lastY;
-                mLayoutParams.x = paramX + dx;
-                mLayoutParams.y = paramY + dy;
-                if (noteBtnMoveCheck)
-                    if (xPosWhenNoteBtnClicked > systemWidthDpi / 2)
-                        mLayoutParams.x += 200;
-                    else
-                        mLayoutParams.x -= 200;
-                mWindowManager.updateViewLayout(noteBtn, mLayoutParams);
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                float x = motionEvent.getRawX();
+                float y = motionEvent.getRawY();
+
+                noteBtnMoving = false;
+
+                noteBtn.getLocationOnScreen(noteBtnPos);
+
+                offsetX = noteBtnPos[0] - x;
+                offsetY = noteBtnPos[1] - y;
+
+            } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE && !noteBtnClicked) {
+
+                float x = motionEvent.getRawX();
+                float y = motionEvent.getRawY();
+
+                WindowManager.LayoutParams params = (WindowManager.LayoutParams) noteBtn.getLayoutParams();
+
+                int newX = (int) (offsetX + x);
+                int newY = (int) (offsetY + y);
+
+                if (Math.abs(newX - noteBtnPos[0]) < 1 && Math.abs(newY - noteBtnPos[1]) < 1 && !noteBtnMoving) {
+                    return false;
+                }
+
+                params.x = newX;
+                params.y = newY - 60;
+
+                mWindowManager.updateViewLayout(noteBtn, params);
+                noteBtnMoving = true;
+            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                return noteBtnMoving;
             }
-            return true;
-        }
-
-        @Override
-        public void onLongPress(MotionEvent e) {
-        }
-
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             return false;
         }
 
         private void createBtns() {
             if ((systemWidthDpi / 2) > noteBtnPos[0]) {
-                noteBtn.setImageResource(R.drawable.ic_undo_black_24dp);
+                noteBtn.setBackgroundResource(R.drawable.ic_undo_black_24dp);
                 mLayoutParams.x = noteBtnPos[0] + 100;
                 mLayoutParams.y = noteBtnPos[1] - 60;
                 mLayoutParams.width = 100;
@@ -262,7 +249,7 @@ public class FloatWindows extends Service {
                 handler.removeCallbacks(runDeleteBtn);
                 handler.postDelayed(runDeleteBtn, 4000);
             } else {
-                noteBtn.setImageResource(R.drawable.ic_undo_black_24dp);
+                noteBtn.setBackgroundResource(R.drawable.ic_undo_black_24dp);
                 mLayoutParams.x = noteBtnPos[0] - 100;
                 mLayoutParams.y = noteBtnPos[1] - 60;
                 mLayoutParams.width = 100;
@@ -280,8 +267,6 @@ public class FloatWindows extends Service {
     private void startScreenShot() {
 
         noteBtn.setVisibility(View.GONE);
-
-        noteBtnMoveCheck = false;
 
         Handler handler1 = new Handler();
         handler1.postDelayed(new Runnable() {
