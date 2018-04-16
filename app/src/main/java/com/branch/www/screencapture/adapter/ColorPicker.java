@@ -19,10 +19,6 @@ import com.branch.www.screencapture.R;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Ahmed Adel on 5/8/17.
- */
-
 public class ColorPicker extends RecyclerView.Adapter<ColorPicker.ViewHolder> {
 
     private LayoutInflater inflater;

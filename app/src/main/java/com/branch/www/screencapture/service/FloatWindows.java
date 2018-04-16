@@ -209,6 +209,7 @@ public class FloatWindows extends Service {
                 handler.removeCallbacks(runDeleteBtn);
                 mWindowManager.removeView(captureBtn);
                 mWindowManager.removeView(exitBtn);
+                mWindowManager.removeView(settingBtn);
                 settingBtn.setBackgroundResource(settingBtnColor);
                 noteBtn.setBackgroundResource(noteBtnColor);
                 noteBtnClicked = false;
@@ -388,6 +389,7 @@ public class FloatWindows extends Service {
                                 switch (str[which]) {
                                     case "하양":
                                         if (noteBtnColor != R.color.white) {
+                                            captureBtnColor = R.drawable.ic_camera_alt_white_24dp;
                                             noteBtnColor = R.drawable.ic_create_white_24dp;
                                             exitBtnColor = R.drawable.ic_cancel_white_24dp;
                                             undoBtnColor = R.drawable.ic_undo_white_24dp;
@@ -405,7 +407,7 @@ public class FloatWindows extends Service {
                                             settingBtnColor = R.drawable.ic_settings_black_24dp;
                                             changeBtnColor();
                                         } else
-                                            Toast.makeText(FloatWindows.this, "이미 하양색 입니다", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(FloatWindows.this, "이미 검정색 입니다", Toast.LENGTH_SHORT).show();
                                         break;
                                     case "초록":
                                         if (noteBtnColor != R.color.grin) {
@@ -416,7 +418,7 @@ public class FloatWindows extends Service {
                                             settingBtnColor = R.drawable.ic_settings_grin_24dp;
                                             changeBtnColor();
                                         } else
-                                            Toast.makeText(FloatWindows.this, "이미 하양색 입니다", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(FloatWindows.this, "이미 초록색 입니다", Toast.LENGTH_SHORT).show();
                                         break;
                                     case "파랑":
                                         if (noteBtnColor != R.color.blue) {
@@ -427,7 +429,7 @@ public class FloatWindows extends Service {
                                             settingBtnColor = R.drawable.ic_settings_blue_24dp;
                                             changeBtnColor();
                                         } else
-                                            Toast.makeText(FloatWindows.this, "이미 하양색 입니다", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(FloatWindows.this, "이미 파란색 입니다", Toast.LENGTH_SHORT).show();
                                         break;
                                     case "분홍":
                                         if (noteBtnColor != R.color.pink) {
@@ -438,7 +440,7 @@ public class FloatWindows extends Service {
                                             settingBtnColor = R.drawable.ic_settings_pink_24dp;
                                             changeBtnColor();
                                         } else
-                                            Toast.makeText(FloatWindows.this, "이미 하양색 입니다", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(FloatWindows.this, "이미 분홍색 입니다", Toast.LENGTH_SHORT).show();
                                         break;
                                     case "노랑":
                                         if (noteBtnColor != R.color.yellow) {
@@ -449,7 +451,7 @@ public class FloatWindows extends Service {
                                             settingBtnColor = R.drawable.ic_settings_yellow_24dp;
                                             changeBtnColor();
                                         } else
-                                            Toast.makeText(FloatWindows.this, "이미 하양색 입니다", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(FloatWindows.this, "이미 노란색 입니다", Toast.LENGTH_SHORT).show();
                                         break;
                                 }
                             }
