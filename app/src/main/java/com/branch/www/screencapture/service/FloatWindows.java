@@ -1,11 +1,10 @@
 package com.branch.www.screencapture.service;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.PixelFormat;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
@@ -22,9 +21,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.branch.www.screencapture.R;
+import com.branch.www.screencapture.activity.MainActivity;
 import com.branch.www.screencapture.thread.ImageManage;
 
 /**
@@ -34,7 +33,7 @@ import com.branch.www.screencapture.thread.ImageManage;
  */
 public class FloatWindows extends Service {
 
-    public static int captureBtnColor, exitBtnColor, noteBtnColor, undoBtnColor, settingBtnColor;
+//    public static int captureBtnColor, exitBtnColor, noteBtnColor, undoBtnColor, settingBtnColor;
 
     private static Intent mResultData = null;
 
@@ -49,6 +48,7 @@ public class FloatWindows extends Service {
     private WindowManager mWindowManager;
     private WindowManager.LayoutParams mLayoutParams;
 
+    public static int buttonTintColor = 0;
 
     private Button noteBtn, captureBtn, exitBtn, settingBtn;
 
@@ -64,6 +64,7 @@ public class FloatWindows extends Service {
 
     private Handler handler = new Handler();
 
+
     private Runnable runDeleteBtn = new Runnable() {
         @Override
         public void run() {
@@ -73,7 +74,7 @@ public class FloatWindows extends Service {
                 mWindowManager.removeView(settingBtn);
             } catch (IllegalArgumentException ignored) {
             }
-            noteBtn.setBackgroundResource(noteBtnColor);
+            noteBtn.setBackgroundResource(R.drawable.ic_create_white_24dp);
             noteBtnClicked = false;
         }
     };
@@ -95,7 +96,6 @@ public class FloatWindows extends Service {
         createFloatView();
 
         createImageReader();
-
     }
 
     private void setOnClickListenersOnBtn() {
@@ -110,7 +110,7 @@ public class FloatWindows extends Service {
                 noteBtn.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        noteBtn.setBackgroundResource(noteBtnColor);
+                        noteBtn.setBackgroundResource(R.drawable.ic_create_white_24dp);
                         noteBtn.setVisibility(View.VISIBLE);
                     }
                 }, 1000);
@@ -143,7 +143,9 @@ public class FloatWindows extends Service {
                 mWindowManager.removeView(captureBtn);
                 mWindowManager.removeView(exitBtn);
                 mWindowManager.removeView(settingBtn);
-                showChangeColorPopup().show();
+                mWindowManager.removeView(noteBtn);
+                startActivity(new Intent(FloatWindows.this, MainActivity.class));
+                stopSelf();
             }
         });
     }
@@ -163,6 +165,9 @@ public class FloatWindows extends Service {
     }
 
     private void createFloatView() {
+
+        NoteBtnListener noteBtnListener = new NoteBtnListener();
+
         mLayoutParams = new WindowManager.LayoutParams();
         mWindowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
 
@@ -187,12 +192,21 @@ public class FloatWindows extends Service {
         mLayoutParams.height = 100;
 
         noteBtn = new Button(FloatWindows.this);
-        noteBtn.setBackgroundResource(noteBtnColor);
+        noteBtn.setBackgroundResource(R.drawable.ic_create_white_24dp);
 
         mWindowManager.addView(noteBtn, mLayoutParams);
 
-        noteBtn.setOnTouchListener(new NoteBtnListener());
-        noteBtn.setOnClickListener(new NoteBtnListener());
+        noteBtn.setOnTouchListener(noteBtnListener);
+        noteBtn.setOnClickListener(noteBtnListener);
+
+        setBackgroundColorTint();
+    }
+
+    private void setBackgroundColorTint() {
+        noteBtn.setBackgroundTintList(ColorStateList.valueOf(buttonTintColor));
+        captureBtn.setBackgroundTintList(ColorStateList.valueOf(buttonTintColor));
+        exitBtn.setBackgroundTintList(ColorStateList.valueOf(buttonTintColor));
+        settingBtn.setBackgroundTintList(ColorStateList.valueOf(buttonTintColor));
     }
 
     private class NoteBtnListener implements View.OnClickListener, View.OnTouchListener {
@@ -201,17 +215,17 @@ public class FloatWindows extends Service {
             noteBtn.getLocationOnScreen(noteBtnPos);
             if (!noteBtnClicked) {
                 noteBtnClicked = true;
-                captureBtn.setBackgroundResource(captureBtnColor);
-                exitBtn.setBackgroundResource(exitBtnColor);
-                settingBtn.setBackgroundResource(settingBtnColor);
+                captureBtn.setBackgroundResource(R.drawable.ic_camera_alt_white_24dp);
+                exitBtn.setBackgroundResource(R.drawable.ic_cancel_white_24dp);
+                settingBtn.setBackgroundResource(R.drawable.ic_settings_white_24dp);
                 createBtns();
             } else {
                 handler.removeCallbacks(runDeleteBtn);
                 mWindowManager.removeView(captureBtn);
                 mWindowManager.removeView(exitBtn);
                 mWindowManager.removeView(settingBtn);
-                settingBtn.setBackgroundResource(settingBtnColor);
-                noteBtn.setBackgroundResource(noteBtnColor);
+                settingBtn.setBackgroundResource(R.drawable.ic_settings_white_24dp);
+                noteBtn.setBackgroundResource(R.drawable.ic_create_white_24dp);
                 noteBtnClicked = false;
             }
         }
@@ -256,7 +270,7 @@ public class FloatWindows extends Service {
 
         private void createBtns() {
             if ((systemWidthDpi / 2) > noteBtnPos[0]) {
-                noteBtn.setBackgroundResource(undoBtnColor);
+                noteBtn.setBackgroundResource(R.drawable.ic_undo_white_24dp);
                 mLayoutParams.x = noteBtnPos[0] + 100;
                 mLayoutParams.y = noteBtnPos[1] - 60;
                 mLayoutParams.width = 100;
@@ -269,7 +283,7 @@ public class FloatWindows extends Service {
                 handler.removeCallbacks(runDeleteBtn);
                 handler.postDelayed(runDeleteBtn, 4000);
             } else {
-                noteBtn.setBackgroundResource(undoBtnColor);
+                noteBtn.setBackgroundResource(R.drawable.ic_undo_white_24dp);
                 mLayoutParams.x = noteBtnPos[0] - 100;
                 mLayoutParams.y = noteBtnPos[1] - 60;
                 mLayoutParams.width = 100;
@@ -367,103 +381,14 @@ public class FloatWindows extends Service {
     public void onDestroy() {
         // to remove mFloatLayout from windowManager
         super.onDestroy();
-        if (noteBtn != null) {
+
+        try {
             mWindowManager.removeView(noteBtn);
+        } catch (Exception ignored) {
         }
+
         stopVirtual();
 
         tearDownMediaProjection();
-    }
-
-    public AlertDialog showChangeColorPopup() {
-        AlertDialog.Builder builder2
-                = new AlertDialog.Builder(FloatWindows.this);
-
-        final String str[] = {"하양", "검정", "초록", "파랑", "분홍", "노랑"};
-        builder2.setTitle("색상 변경")
-                .setNegativeButton("취소", null)
-                .setItems(str, // 리스트 목록에 사용할 배열
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (str[which]) {
-                                    case "하양":
-                                        if (noteBtnColor != R.color.white) {
-                                            captureBtnColor = R.drawable.ic_camera_alt_white_24dp;
-                                            noteBtnColor = R.drawable.ic_create_white_24dp;
-                                            exitBtnColor = R.drawable.ic_cancel_white_24dp;
-                                            undoBtnColor = R.drawable.ic_undo_white_24dp;
-                                            settingBtnColor = R.drawable.ic_settings_white_24dp;
-                                            changeBtnColor();
-                                        } else
-                                            Toast.makeText(FloatWindows.this, "이미 하양색 입니다", Toast.LENGTH_SHORT).show();
-                                        break;
-                                    case "검정":
-                                        if (noteBtnColor != R.color.black) {
-                                            captureBtnColor = R.drawable.ic_camera_alt_black_24dp;
-                                            exitBtnColor = R.drawable.ic_cancel_black_24dp;
-                                            undoBtnColor = R.drawable.ic_undo_black_24dp;
-                                            noteBtnColor = R.drawable.ic_create_black_24dp;
-                                            settingBtnColor = R.drawable.ic_settings_black_24dp;
-                                            changeBtnColor();
-                                        } else
-                                            Toast.makeText(FloatWindows.this, "이미 검정색 입니다", Toast.LENGTH_SHORT).show();
-                                        break;
-                                    case "초록":
-                                        if (noteBtnColor != R.color.grin) {
-                                            captureBtnColor = R.drawable.ic_camera_alt_grin_24dp;
-                                            exitBtnColor = R.drawable.ic_cancel_grin_24dp;
-                                            undoBtnColor = R.drawable.ic_undo_grin_24dp;
-                                            noteBtnColor = R.drawable.ic_create_grin_24dp;
-                                            settingBtnColor = R.drawable.ic_settings_grin_24dp;
-                                            changeBtnColor();
-                                        } else
-                                            Toast.makeText(FloatWindows.this, "이미 초록색 입니다", Toast.LENGTH_SHORT).show();
-                                        break;
-                                    case "파랑":
-                                        if (noteBtnColor != R.color.blue) {
-                                            captureBtnColor = R.drawable.ic_camera_alt_blue_24dp;
-                                            exitBtnColor = R.drawable.ic_cancel_blue_24dp;
-                                            undoBtnColor = R.drawable.ic_undo_blue_24dp;
-                                            noteBtnColor = R.drawable.ic_create_blue_24dp;
-                                            settingBtnColor = R.drawable.ic_settings_blue_24dp;
-                                            changeBtnColor();
-                                        } else
-                                            Toast.makeText(FloatWindows.this, "이미 파란색 입니다", Toast.LENGTH_SHORT).show();
-                                        break;
-                                    case "분홍":
-                                        if (noteBtnColor != R.color.pink) {
-                                            captureBtnColor = R.drawable.ic_camera_alt_pink_24dp;
-                                            exitBtnColor = R.drawable.ic_cancel_pink_24dp;
-                                            undoBtnColor = R.drawable.ic_undo_pink_24dp;
-                                            noteBtnColor = R.drawable.ic_create_pink_24dp;
-                                            settingBtnColor = R.drawable.ic_settings_pink_24dp;
-                                            changeBtnColor();
-                                        } else
-                                            Toast.makeText(FloatWindows.this, "이미 분홍색 입니다", Toast.LENGTH_SHORT).show();
-                                        break;
-                                    case "노랑":
-                                        if (noteBtnColor != R.color.yellow) {
-                                            captureBtnColor = R.drawable.ic_camera_alt_yellow_24dp;
-                                            exitBtnColor = R.drawable.ic_cancel_yellow_24dp;
-                                            undoBtnColor = R.drawable.ic_undo_yellow_24dp;
-                                            noteBtnColor = R.drawable.ic_create_yellow_24dp;
-                                            settingBtnColor = R.drawable.ic_settings_yellow_24dp;
-                                            changeBtnColor();
-                                        } else
-                                            Toast.makeText(FloatWindows.this, "이미 노란색 입니다", Toast.LENGTH_SHORT).show();
-                                        break;
-                                }
-                            }
-                        }); // 클릭 리스너
-        return builder2.create();
-    }
-
-    public void changeBtnColor() {
-        noteBtn.setBackgroundResource(noteBtnColor);
-        exitBtn.setBackgroundResource(noteBtnColor);
-        captureBtn.setBackgroundResource(noteBtnColor);
-        settingBtn.setBackgroundResource(noteBtnColor);
-        Toast.makeText(this, "버튼의 색상이 변경되었습니다", Toast.LENGTH_SHORT).show();
     }
 }
