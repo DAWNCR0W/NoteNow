@@ -8,16 +8,12 @@ import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.branch.www.screencapture.ChangeViewColor;
 import com.branch.www.screencapture.R;
 import com.branch.www.screencapture.service.FloatWindows;
 import com.flask.colorpicker.ColorPickerView;
@@ -34,31 +30,38 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        FloatWindows.noteBtnColor = R.drawable.ic_create_white_24dp;
-//        FloatWindows.exitBtnColor = R.drawable.ic_cancel_white_24dp;
-//        FloatWindows.undoBtnColor = R.drawable.ic_undo_white_24dp;
-//        FloatWindows.settingBtnColor = R.drawable.ic_settings_white_24dp;
     }
 
     public void requestCapturePermission() {
-        //스크린샷에 필요한 권한 요청
 
+        String[] PERMISSIONS = {
+
+                android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+        };
+
+        //스크린샷에 필요한 권한 요청
         MediaProjectionManager mediaProjectionManager = (MediaProjectionManager)
                 getSystemService(Context.MEDIA_PROJECTION_SERVICE);
 
-        String[] PERMISSIONS = {android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
         if (!hasReadWritePermissions(MainActivity.this, PERMISSIONS)) {
+
             Toast.makeText(this, "앱 실행에 필요한 권한을 허용해 주세요!", Toast.LENGTH_SHORT).show();
             ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, REQUEST);
         } else {
+
             if (!Settings.canDrawOverlays(this)) {
+
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                         Uri.parse("package:" + getPackageName()));
                 startActivityForResult(intent, 123);
             } else {
+
                 if (mediaProjectionManager != null) {
+
                     startActivityForResult(mediaProjectionManager.createScreenCaptureIntent(),
                             REQUEST_MEDIA_PROJECTION);
                 }
@@ -68,6 +71,7 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         //서비스를 실행하여 백그라운드로 실행
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -85,9 +89,13 @@ public class MainActivity extends FragmentActivity {
     }
 
     private static boolean hasReadWritePermissions(Context context, String... permissions) {
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+
             for (String permission : permissions) {
+
                 if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+
                     return false;
                 }
             }
@@ -96,10 +104,12 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void StartServiceBtnClicked(View view) {
+
         requestCapturePermission();
     }
 
     public void changeColorBtnClicked(View view) {
+
         ColorPickerDialogBuilder
                 .with(MainActivity.this)
                 .setTitle("버튼 색상을 선택하세요")
@@ -108,6 +118,7 @@ public class MainActivity extends FragmentActivity {
                 .setOnColorSelectedListener(new OnColorSelectedListener() {
                     @Override
                     public void onColorSelected(int i) {
+
                         FloatWindows.buttonTintColor = i;
                         Toasty.custom(MainActivity.this,
                                 "색상이 변경되었습니다",
@@ -117,12 +128,14 @@ public class MainActivity extends FragmentActivity {
                     }
                 })
                 .setPositiveButton("확인", new ColorPickerClickListener() {
+
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
 
                     }
                 })
                 .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 

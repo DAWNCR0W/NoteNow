@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 public class BaseActivity extends AppCompatActivity {
+
     public static final int READ_WRITE_STORAGE = 52;
     private ProgressDialog mProgressDialog;
 

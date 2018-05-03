@@ -51,6 +51,7 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
     private static final String TAG = PaintActivity.class.getSimpleName();
     private static final int CAMERA_REQUEST = 52;
     private static final int PICK_REQUEST = 53;
+
     private PhotoEditor mPhotoEditor;
     private PropertiesFragment mPropertiesFragment;
     private EmojiFragment mEmojiFragment;
