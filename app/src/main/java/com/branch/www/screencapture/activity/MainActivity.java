@@ -47,24 +47,25 @@ public class MainActivity extends FragmentActivity {
         MediaProjectionManager mediaProjectionManager = (MediaProjectionManager)
                 getSystemService(Context.MEDIA_PROJECTION_SERVICE);
 
-        if (!hasReadWritePermissions(MainActivity.this, PERMISSIONS)) {
+        if (mediaProjectionManager != null) {
+
+            startActivityForResult(mediaProjectionManager.createScreenCaptureIntent(),
+                    REQUEST_MEDIA_PROJECTION);
+        }
+
+        if (!hasReadWritePermissions(MainActivity.this, PERMISSIONS)
+                || !Settings.canDrawOverlays(this)) {
 
             Toast.makeText(this, "앱 실행에 필요한 권한을 허용해 주세요!", Toast.LENGTH_SHORT).show();
+
             ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, REQUEST);
-        } else {
 
             if (!Settings.canDrawOverlays(this)) {
 
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                         Uri.parse("package:" + getPackageName()));
+
                 startActivityForResult(intent, 123);
-            } else {
-
-                if (mediaProjectionManager != null) {
-
-                    startActivityForResult(mediaProjectionManager.createScreenCaptureIntent(),
-                            REQUEST_MEDIA_PROJECTION);
-                }
             }
         }
     }
