@@ -3,19 +3,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/orange_color_picker"
     android:orientation="vertical"
     tools:context="com.branch.www.screencapture.activity.MainActivity">
 
     <Button
-        android:onClick="StartServiceBtnClicked"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/button_round"
+        android:elevation="0dp"
+        android:onClick="StartServiceBtnClicked"
         android:text="시작하기" />
 
     <Button
         android:id="@+id/button_color_picker"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/button_round"
         android:onClick="changeColorBtnClicked"
         android:text="버튼 색상 변경하기" />
+
+
 </LinearLayout>
