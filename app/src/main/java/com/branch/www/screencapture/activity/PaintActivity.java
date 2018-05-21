@@ -20,7 +20,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.branch.www.screencapture.FileUtil;
 import com.branch.www.screencapture.GlobalScreenShot;
@@ -36,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
+import es.dmoral.toasty.Toasty;
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
@@ -335,7 +335,7 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
         if (isGranted) {
             saveImage();
         } else {
-            Toast.makeText(this, "권한이 없습니다. 앱을 다시 실행시켜 권한을 설정해 주세요!", Toast.LENGTH_SHORT).show();
+            Toasty.error(this, "권한이 없습니다. 앱을 다시 실행시켜 권한을 설정해 주세요!").show();
         }
     }
 

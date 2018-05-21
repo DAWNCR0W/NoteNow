@@ -56,7 +56,7 @@ public class MainActivity extends FragmentActivity {
         if (!hasReadWritePermissions(MainActivity.this, PERMISSIONS)
                 || !Settings.canDrawOverlays(this)) {
 
-            Toast.makeText(this, "앱 실행에 필요한 권한을 허용해 주세요!", Toast.LENGTH_SHORT).show();
+            Toasty.warning(this, "앱 실행에 필요한 권한을 허용해 주세요!").show();
 
             ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, REQUEST);
 

@@ -3,14 +3,14 @@ package com.branch.www.screencapture.activity;
 import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
+
+import es.dmoral.toasty.Toasty;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -63,9 +63,9 @@ public class BaseActivity extends AppCompatActivity {
     void showSnackbar(@NonNull String message) {
         View view = findViewById(android.R.id.content);
         if (view != null) {
-            Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
+            Toasty.success(this, message).show();
         } else {
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            Toasty.error(this, message).show();
         }
     }
 }

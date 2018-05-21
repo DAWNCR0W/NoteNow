@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
@@ -25,6 +26,8 @@ import android.widget.Button;
 import com.branch.www.screencapture.R;
 import com.branch.www.screencapture.activity.MainActivity;
 import com.branch.www.screencapture.thread.ImageManage;
+
+import es.dmoral.toasty.Toasty;
 
 /**
  * Created by branch on 2016-5-25.
@@ -48,7 +51,7 @@ public class FloatWindows extends Service {
     private WindowManager mWindowManager;
     private WindowManager.LayoutParams mLayoutParams;
 
-    public static int buttonTintColor = 0;
+    public static int buttonTintColor = Color.parseColor("#ffffff");
 
     private Button noteBtn, captureBtn, exitBtn, settingBtn;
 
@@ -379,6 +382,7 @@ public class FloatWindows extends Service {
 
     @Override
     public void onDestroy() {
+
         // to remove mFloatLayout from windowManager
         super.onDestroy();
 

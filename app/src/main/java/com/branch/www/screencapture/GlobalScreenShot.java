@@ -278,6 +278,7 @@ public class GlobalScreenShot {
         final float scaleDurationPct = (float) SCREENSHOT_DROP_OUT_SCALE_DURATION
                 / SCREENSHOT_DROP_OUT_DURATION;
         final Interpolator scaleInterpolator = new Interpolator() {
+
             @Override
             public float getInterpolation(float x) {
                 if (x < scaleDurationPct) {
