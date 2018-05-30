@@ -1,2 +1,3 @@
-#**NoteNow**
-##This project forked from [here](https://github.com/goodbranch/ScreenCapture).
+NoteNow
+===================
+NoteNow is a simple screen capture and painting Android application.
