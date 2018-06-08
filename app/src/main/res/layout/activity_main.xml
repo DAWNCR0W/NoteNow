@@ -13,11 +13,10 @@
         android:layout_gravity="center"
         android:background="@drawable/button_round"
         android:elevation="0dp"
-        android:onClick="StartServiceBtnClicked"
+        android:onClick="startServiceBtnClicked"
         android:text="시작하기" />
 
     <Button
-        android:id="@+id/button_color_picker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

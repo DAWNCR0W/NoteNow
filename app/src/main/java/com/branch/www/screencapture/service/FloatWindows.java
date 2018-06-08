@@ -27,8 +27,6 @@ import com.branch.www.screencapture.R;
 import com.branch.www.screencapture.activity.MainActivity;
 import com.branch.www.screencapture.thread.ImageManage;
 
-import es.dmoral.toasty.Toasty;
-
 /**
  * Created by branch on 2016-5-25.
  * <p>
@@ -180,10 +178,11 @@ public class FloatWindows extends Service {
         mScreenWidth = metrics.widthPixels;
         mScreenHeight = metrics.heightPixels;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        else
+        } else {
             mLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        }
         mLayoutParams.format = PixelFormat.RGBA_8888;
         // Window flag
         mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
@@ -308,6 +307,7 @@ public class FloatWindows extends Service {
 
         Handler handler1 = new Handler();
         handler1.postDelayed(new Runnable() {
+            @Override
             public void run() {
                 //start virtual
                 startVirtual();
@@ -315,6 +315,7 @@ public class FloatWindows extends Service {
         }, 5);
 
         handler1.postDelayed(new Runnable() {
+            @Override
             public void run() {
                 //capture the screen
                 startCapture();

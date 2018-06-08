@@ -41,6 +41,10 @@ import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
 import ja.burhanrashid52.photoeditor.ViewType;
 
+import static com.branch.www.screencapture.StaticResource.CAMERA_REQUEST;
+import static com.branch.www.screencapture.StaticResource.PICK_REQUEST;
+import static com.branch.www.screencapture.StaticResource.READ_WRITE_STORAGE;
+
 public class PaintActivity extends BaseActivity implements GlobalScreenShot.onScreenShotListener,
         OnPhotoEditorListener,
         View.OnClickListener,
@@ -49,15 +53,12 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
         StickerFragment.StickerListener {
 
     private static final String TAG = PaintActivity.class.getSimpleName();
-    private static final int CAMERA_REQUEST = 52;
-    private static final int PICK_REQUEST = 53;
 
     private PhotoEditor mPhotoEditor;
     private PropertiesFragment mPropertiesFragment;
     private EmojiFragment mEmojiFragment;
     private StickerFragment mStickerFragment;
     private TextView mTxtCurrentTool;
-    private Typeface mWonderFont;
 
     PhotoEditorView mPhotoEditorView;
 
@@ -76,8 +77,6 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
         mPhotoEditorView = findViewById(R.id.photoEditorView);
 
         initViews();
-
-        mWonderFont = Typeface.createFromAsset(getAssets(), "beyond _wonderland.ttf");
 
         mPropertiesFragment = new PropertiesFragment();
         mEmojiFragment = new EmojiFragment();
@@ -218,19 +217,15 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
                     }
                 });
                 break;
-
             case R.id.imgUndo:
                 mPhotoEditor.undo();
                 break;
-
             case R.id.imgRedo:
                 mPhotoEditor.redo();
                 break;
-
             case R.id.imgSave:
                 saveImage();
                 break;
-
             case R.id.imgClose:
                 if (!mPhotoEditor.isCacheEmpty()) {
                     showSaveDialog();
@@ -238,13 +233,13 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
                     finishAffinity();
                 }
                 break;
-
             case R.id.imgSticker:
                 mStickerFragment.show(getSupportFragmentManager(), mStickerFragment.getTag());
                 break;
-
             case R.id.imgEmoji:
                 mEmojiFragment.show(getSupportFragmentManager(), mEmojiFragment.getTag());
+                break;
+            default:
                 break;
         }
     }
@@ -294,6 +289,8 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                    break;
+                default:
                     break;
             }
         }
@@ -364,6 +361,7 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
         builder.create().show();
     }
 
+    @Override
     public boolean requestPermission(String permission) {
         boolean isGranted = ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED;
         if (!isGranted) {

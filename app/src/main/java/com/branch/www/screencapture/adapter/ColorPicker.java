@@ -1,12 +1,6 @@
 package com.branch.www.screencapture.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +13,9 @@ import com.branch.www.screencapture.R;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author dawncrow
+ */
 public class ColorPicker extends RecyclerView.Adapter<ColorPicker.ViewHolder> {
 
     private LayoutInflater inflater;
@@ -65,8 +62,9 @@ public class ColorPicker extends RecyclerView.Adapter<ColorPicker.ViewHolder> {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (onColorPickerClickListener != null)
+                    if (onColorPickerClickListener != null) {
                         onColorPickerClickListener.onColorPickerClickListener(colorPickerColors.get(getAdapterPosition()));
+                    }
                 }
             });
         }

@@ -85,6 +85,8 @@ public class PropertiesFragment extends BottomSheetDialogFragment implements See
                     mProperties.onBrushSizeChanged(i);
                 }
                 break;
+            default:
+                break;
         }
     }
 

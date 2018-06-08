@@ -5,4 +5,5 @@
     <string name="label_sticker">스티커</string>
     <string name="label_eraser">지우개</string>
     <string name="label_text">텍스트</string>
+    <string name="date_format">yyyy-MM-dd-hh-mm-ss</string>
 </resources>

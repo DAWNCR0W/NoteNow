@@ -20,6 +20,9 @@ import java.util.Objects;
 
 import ja.burhanrashid52.photoeditor.PhotoEditor;
 
+/**
+ * @author dawncrow
+ */
 public class EmojiFragment extends BottomSheetDialogFragment {
 
     public EmojiFragment() {

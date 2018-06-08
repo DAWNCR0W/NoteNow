@@ -1,5 +1,6 @@
 package com.branch.www.screencapture.activity;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -12,11 +13,15 @@ import android.view.WindowManager;
 
 import es.dmoral.toasty.Toasty;
 
+import static com.branch.www.screencapture.StaticResource.READ_WRITE_STORAGE;
+
+/**
+ * @author dawncrow
+ */
+@SuppressLint("Registered")
 public class BaseActivity extends AppCompatActivity {
 
-    public static final int READ_WRITE_STORAGE = 52;
     private ProgressDialog mProgressDialog;
-
 
     public boolean requestPermission(String permission) {
         boolean isGranted = ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED;
@@ -42,6 +47,8 @@ public class BaseActivity extends AppCompatActivity {
         switch (requestCode) {
             case READ_WRITE_STORAGE:
                 isPermissionGranted(grantResults[0] == PackageManager.PERMISSION_GRANTED, permissions[0]);
+                break;
+            default:
                 break;
         }
     }

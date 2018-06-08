@@ -23,10 +23,13 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
 import es.dmoral.toasty.Toasty;
 
-public class MainActivity extends FragmentActivity {
+import static com.branch.www.screencapture.StaticResource.REQUEST;
+import static com.branch.www.screencapture.StaticResource.REQUEST_MEDIA_PROJECTION;
 
-    public static final int REQUEST_MEDIA_PROJECTION = 18;
-    public static final int REQUEST = 112;
+/**
+ * @author dawncrow
+ */
+public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +39,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void requestCapturePermission() {
-
-        String[] PERMISSIONS = {
-
+        String[] permissions = {
                 android.Manifest.permission.READ_EXTERNAL_STORAGE,
                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE
         };
@@ -53,12 +54,12 @@ public class MainActivity extends FragmentActivity {
                     REQUEST_MEDIA_PROJECTION);
         }
 
-        if (!hasReadWritePermissions(MainActivity.this, PERMISSIONS)
+        if (!hasReadWritePermissions(MainActivity.this, permissions)
                 || !Settings.canDrawOverlays(this)) {
 
             Toasty.warning(this, "앱 실행에 필요한 권한을 허용해 주세요!").show();
 
-            ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, REQUEST);
+            ActivityCompat.requestPermissions(MainActivity.this, permissions, REQUEST);
 
             if (!Settings.canDrawOverlays(this)) {
 
@@ -85,6 +86,8 @@ public class MainActivity extends FragmentActivity {
                     finish();
                 }
                 break;
+            default:
+                break;
         }
 
     }
@@ -104,7 +107,7 @@ public class MainActivity extends FragmentActivity {
         return true;
     }
 
-    public void StartServiceBtnClicked(View view) {
+    public void startServiceBtnClicked(View view) {
 
         requestCapturePermission();
     }

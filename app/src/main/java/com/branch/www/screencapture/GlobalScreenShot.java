@@ -22,26 +22,13 @@ import android.view.WindowManager;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
 
-/**
- * POD used in the AsyncTask which saves an image in the background.
- */
+import static com.branch.www.screencapture.StaticResource.*;
 
 /**
  * TODO: - Performance when over gl surfaces? Ie. Gallery - what do we say in the Toast? Which icon
  * do we get if the user uses another type of gallery?
  */
 public class GlobalScreenShot {
-
-    private static final int SCREENSHOT_FLASH_TO_PEAK_DURATION = 130;
-    private static final int SCREENSHOT_DROP_IN_DURATION = 430;
-    private static final int SCREENSHOT_DROP_OUT_DELAY = 500;
-    private static final int SCREENSHOT_DROP_OUT_DURATION = 430;
-    private static final int SCREENSHOT_DROP_OUT_SCALE_DURATION = 370;
-    private static final float BACKGROUND_ALPHA = 0.5f;
-    private static final float SCREENSHOT_SCALE = 1f;
-    private static final float SCREENSHOT_DROP_IN_MIN_SCALE = SCREENSHOT_SCALE * 0.725f;
-    private static final float SCREENSHOT_DROP_OUT_MIN_SCALE = SCREENSHOT_SCALE * 0.45f;
-    private static final float SCREENSHOT_DROP_OUT_MIN_SCALE_OFFSET = 0f;
 
     private WindowManager mWindowManager;
     private WindowManager.LayoutParams mWindowLayoutParams;
@@ -87,7 +74,7 @@ public class GlobalScreenShot {
         });
 
         // Setup the window that we are going to use
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mWindowLayoutParams = new WindowManager.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0, 0,
                     WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
@@ -96,7 +83,7 @@ public class GlobalScreenShot {
                             | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                             | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED,
                     PixelFormat.TRANSLUCENT);
-        else
+        } else {
             mWindowLayoutParams = new WindowManager.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0, 0,
                     WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
@@ -105,6 +92,7 @@ public class GlobalScreenShot {
                             | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                             | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED,
                     PixelFormat.TRANSLUCENT);
+        }
         mWindowLayoutParams.setTitle("ScreenshotAnimation");
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 
@@ -240,9 +228,6 @@ public class GlobalScreenShot {
             @Override
             public void onAnimationEnd(Animator animation) {
                 mScreenshotFlash.setVisibility(View.GONE);
-
-//        mScreenshotView.setScaleX(SCREENSHOT_SCALE);
-//        mScreenshotView.setScaleY(SCREENSHOT_SCALE);
             }
         });
         anim.addUpdateListener(new AnimatorUpdateListener() {

@@ -6,9 +6,11 @@ import android.os.Environment;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
- * Created by ryze on 2016-5-26.
+ * @author dawncrow
+ * @date 2016-5-26
  */
 public class FileUtil {
 
@@ -47,7 +49,7 @@ public class FileUtil {
     }
 
     public static String getScreenShotsName(Context context) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(context.getString(R.string.date_format), Locale.KOREA);
         String date = simpleDateFormat.format(new Date());
         return getScreenShots(context) + SCREENSHOT_NAME +
                 "_" +
@@ -56,7 +58,7 @@ public class FileUtil {
     }
 
     public static String getEditedScreencapture(Context context) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(context.getString(R.string.date_format), Locale.KOREA);
         String date = simpleDateFormat.format(new Date());
         return getEditedScreenShots(context) + SCREENSHOT_NAME +
                 "_" +
