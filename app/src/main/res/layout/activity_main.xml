@@ -1,28 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/orange_color_picker"
-    android:orientation="vertical"
-    tools:context="com.branch.www.screencapture.activity.MainActivity">
+    android:background="@color/black">
 
-    <Button
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@drawable/button_round"
-        android:elevation="0dp"
-        android:onClick="startServiceBtnClicked"
-        android:text="시작하기" />
+        android:background="@color/orange_color_picker"
+        android:orientation="vertical"
+        tools:context="com.branch.www.screencapture.activity.MainActivity">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@drawable/button_round"
-        android:onClick="changeColorBtnClicked"
-        android:text="버튼 색상 변경하기" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/button_round"
+            android:elevation="0dp"
+            android:onClick="startServiceBtnClicked"
+            android:text="시작하기" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/button_round"
+            android:onClick="changeColorBtnClicked"
+            android:text="버튼 색상 변경하기" />
 
-</LinearLayout>
+        <ImageButton
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/github_logo" />
+
+        <ImageButton
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/toasty_logo" />
+
+        <ImageButton
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/quad_flask_logo" />
+
+    </LinearLayout>
+</ScrollView>

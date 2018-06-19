@@ -6,4 +6,13 @@
     <string name="label_eraser">지우개</string>
     <string name="label_text">텍스트</string>
     <string name="date_format">yyyy-MM-dd-hh-mm-ss</string>
+    <string name="brush">브러쉬</string>
+    <string name="text">텍스트</string>
+    <string name="eraser">Eraser</string>
+    <string name="sticker">스티커</string>
+    <string name="emoji">이모티콘</string>
+    <string name="exit">닫기</string>
+    <string name="done">완료</string>
+    <string name="alpha">투명도</string>
+    <string name="size">크기</string>
 </resources>

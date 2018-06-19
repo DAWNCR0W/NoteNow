@@ -16,7 +16,9 @@ import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.annotation.RequiresApi;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -80,6 +82,7 @@ public class FloatWindows extends Service {
         }
     };
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onCreate() {
         super.onCreate();
@@ -181,7 +184,7 @@ public class FloatWindows extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
         } else {
-            mLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+            mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
         }
         mLayoutParams.format = PixelFormat.RGBA_8888;
         // Window flag
@@ -270,31 +273,51 @@ public class FloatWindows extends Service {
             return false;
         }
 
+        /**
+         * 기기의 가로 길이를 구하고 반으로 나눈 뒤, 현재 버튼의 위치에 따라 생성 위치를 결정
+         */
         private void createBtns() {
             if ((systemWidthDpi / 2) > noteBtnPos[0]) {
+
+                Log.e("system width", String.valueOf(systemWidthDpi));
+                Log.e("noteBtnPost", String.valueOf(noteBtnPos[0]) + ":" + String.valueOf(noteBtnPos[1]));
+
                 noteBtn.setBackgroundResource(R.drawable.ic_undo_white_24dp);
+
                 mLayoutParams.x = noteBtnPos[0] + 100;
                 mLayoutParams.y = noteBtnPos[1] - 60;
+
                 mLayoutParams.width = 100;
                 mLayoutParams.height = 100;
+
                 mWindowManager.addView(captureBtn, mLayoutParams);
                 mLayoutParams.x = noteBtnPos[0] + 200;
+
                 mWindowManager.addView(settingBtn, mLayoutParams);
                 mLayoutParams.x = noteBtnPos[0] + 300;
+
                 mWindowManager.addView(exitBtn, mLayoutParams);
+
                 handler.removeCallbacks(runDeleteBtn);
                 handler.postDelayed(runDeleteBtn, 4000);
             } else {
+
                 noteBtn.setBackgroundResource(R.drawable.ic_undo_white_24dp);
+
                 mLayoutParams.x = noteBtnPos[0] - 100;
                 mLayoutParams.y = noteBtnPos[1] - 60;
+
                 mLayoutParams.width = 100;
                 mLayoutParams.height = 100;
+
                 mWindowManager.addView(captureBtn, mLayoutParams);
                 mLayoutParams.x = noteBtnPos[0] - 200;
+
                 mWindowManager.addView(settingBtn, mLayoutParams);
                 mLayoutParams.x = noteBtnPos[0] - 300;
+
                 mWindowManager.addView(exitBtn, mLayoutParams);
+
                 handler.removeCallbacks(runDeleteBtn);
                 handler.postDelayed(runDeleteBtn, 4000);
             }
