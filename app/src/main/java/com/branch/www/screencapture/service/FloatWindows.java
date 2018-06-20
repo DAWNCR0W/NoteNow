@@ -1,5 +1,6 @@
 package com.branch.www.screencapture.service;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
@@ -18,7 +19,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.RequiresApi;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,47 +26,41 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 import com.branch.www.screencapture.R;
+import com.branch.www.screencapture.StaticResource;
 import com.branch.www.screencapture.activity.MainActivity;
 import com.branch.www.screencapture.thread.ImageManage;
 
 /**
- * Created by branch on 2016-5-25.
+ * @author branch
+ * @date 2016-5-25
  * <p>
  * 启动悬浮窗界面
  */
 public class FloatWindows extends Service {
 
-//    public static int captureBtnColor, exitBtnColor, noteBtnColor, undoBtnColor, settingBtnColor;
+    public static int buttonTintColor = Color.parseColor("#ffffff");
 
     private static Intent mResultData = null;
-
     private boolean noteBtnMoving = false;
-
     private float offsetX, offsetY;
 
     private MediaProjection mMediaProjection;
     private VirtualDisplay mVirtualDisplay;
-
     private ImageReader mImageReader;
     private WindowManager mWindowManager;
     private WindowManager.LayoutParams mLayoutParams;
 
-    public static int buttonTintColor = Color.parseColor("#ffffff");
-
     private Button noteBtn, captureBtn, exitBtn, settingBtn;
-
     private int mScreenWidth;
     private int mScreenHeight;
     private int mScreenDensity;
-
     private float systemWidthDpi;
-
     private int[] noteBtnPos = new int[2];
-
     private boolean noteBtnClicked = false;
+    private int btnSize;
+    private int btnDividerSize;
 
     private Handler handler = new Handler();
-
 
     private Runnable runDeleteBtn = new Runnable() {
         @Override
@@ -93,7 +87,7 @@ public class FloatWindows extends Service {
 
         settingBtn = new Button(FloatWindows.this);
 
-        getSystemSize();
+        getSizes();
 
         setOnClickListenersOnBtn();
 
@@ -154,9 +148,11 @@ public class FloatWindows extends Service {
         });
     }
 
-    private void getSystemSize() {
+    private void getSizes() {
         final DisplayMetrics displayMetrics = FloatWindows.this.getResources().getDisplayMetrics();
         systemWidthDpi = displayMetrics.widthPixels / displayMetrics.density;
+        btnSize = (int) (systemWidthDpi * StaticResource.BUTTON_CRITERIA);
+        btnDividerSize = (int) (systemWidthDpi * StaticResource.BUTTON_DIVIDER_CRITERIA);
     }
 
     public static void setResultData(Intent mResultData) {
@@ -168,6 +164,8 @@ public class FloatWindows extends Service {
         return null;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @SuppressLint("ClickableViewAccessibility")
     private void createFloatView() {
 
         NoteBtnListener noteBtnListener = new NoteBtnListener();
@@ -187,14 +185,13 @@ public class FloatWindows extends Service {
             mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
         }
         mLayoutParams.format = PixelFormat.RGBA_8888;
-        // Window flag
         mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                 | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         mLayoutParams.gravity = Gravity.START | Gravity.TOP;
         mLayoutParams.x = mScreenWidth;
-        mLayoutParams.y = 100;
-        mLayoutParams.width = 100;
-        mLayoutParams.height = 100;
+        mLayoutParams.y = btnSize;
+        mLayoutParams.width = btnSize;
+        mLayoutParams.height = btnSize;
 
         noteBtn = new Button(FloatWindows.this);
         noteBtn.setBackgroundResource(R.drawable.ic_create_white_24dp);
@@ -235,6 +232,7 @@ public class FloatWindows extends Service {
             }
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
@@ -251,19 +249,19 @@ public class FloatWindows extends Service {
             } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE && !noteBtnClicked) {
 
                 float x = motionEvent.getRawX();
-                float y = motionEvent.getRawY();
+                float y = motionEvent.getRawY() - systemWidthDpi * StaticResource.BUTTON_TOUCH_X;
 
                 WindowManager.LayoutParams params = (WindowManager.LayoutParams) noteBtn.getLayoutParams();
 
                 int newX = (int) (offsetX + x);
-                int newY = (int) (offsetY + y);
+                int newY = (int) (offsetY + y) - (int) (systemWidthDpi * StaticResource.BUTTON_TOUCH_X);
 
                 if (Math.abs(newX - noteBtnPos[0]) < 1 && Math.abs(newY - noteBtnPos[1]) < 1 && !noteBtnMoving) {
                     return false;
                 }
 
                 params.x = newX;
-                params.y = newY - 60;
+                params.y = newY - btnDividerSize;
 
                 mWindowManager.updateViewLayout(noteBtn, params);
                 noteBtnMoving = true;
@@ -277,24 +275,21 @@ public class FloatWindows extends Service {
          * 기기의 가로 길이를 구하고 반으로 나눈 뒤, 현재 버튼의 위치에 따라 생성 위치를 결정
          */
         private void createBtns() {
-            if ((systemWidthDpi / 2) > noteBtnPos[0]) {
-
-                Log.e("system width", String.valueOf(systemWidthDpi));
-                Log.e("noteBtnPost", String.valueOf(noteBtnPos[0]) + ":" + String.valueOf(noteBtnPos[1]));
+            if (systemWidthDpi > noteBtnPos[0]) {
 
                 noteBtn.setBackgroundResource(R.drawable.ic_undo_white_24dp);
 
-                mLayoutParams.x = noteBtnPos[0] + 100;
-                mLayoutParams.y = noteBtnPos[1] - 60;
+                mLayoutParams.x = noteBtnPos[0] + btnSize;
+                mLayoutParams.y = noteBtnPos[1] - btnDividerSize;
 
-                mLayoutParams.width = 100;
-                mLayoutParams.height = 100;
+                mLayoutParams.width = btnSize;
+                mLayoutParams.height = btnSize;
 
                 mWindowManager.addView(captureBtn, mLayoutParams);
-                mLayoutParams.x = noteBtnPos[0] + 200;
+                mLayoutParams.x = noteBtnPos[0] + btnSize * 2;
 
                 mWindowManager.addView(settingBtn, mLayoutParams);
-                mLayoutParams.x = noteBtnPos[0] + 300;
+                mLayoutParams.x = noteBtnPos[0] + btnSize * 3;
 
                 mWindowManager.addView(exitBtn, mLayoutParams);
 
@@ -304,17 +299,17 @@ public class FloatWindows extends Service {
 
                 noteBtn.setBackgroundResource(R.drawable.ic_undo_white_24dp);
 
-                mLayoutParams.x = noteBtnPos[0] - 100;
-                mLayoutParams.y = noteBtnPos[1] - 60;
+                mLayoutParams.x = noteBtnPos[0] - btnSize;
+                mLayoutParams.y = noteBtnPos[1] - btnDividerSize;
 
-                mLayoutParams.width = 100;
-                mLayoutParams.height = 100;
+                mLayoutParams.width = btnSize;
+                mLayoutParams.height = btnSize;
 
                 mWindowManager.addView(captureBtn, mLayoutParams);
-                mLayoutParams.x = noteBtnPos[0] - 200;
+                mLayoutParams.x = noteBtnPos[0] - btnSize * 2;
 
                 mWindowManager.addView(settingBtn, mLayoutParams);
-                mLayoutParams.x = noteBtnPos[0] - 300;
+                mLayoutParams.x = noteBtnPos[0] - btnSize * 3;
 
                 mWindowManager.addView(exitBtn, mLayoutParams);
 
@@ -406,17 +401,12 @@ public class FloatWindows extends Service {
 
     @Override
     public void onDestroy() {
-
-        // to remove mFloatLayout from windowManager
         super.onDestroy();
-
         try {
             mWindowManager.removeView(noteBtn);
         } catch (Exception ignored) {
         }
-
         stopVirtual();
-
         tearDownMediaProjection();
     }
 }

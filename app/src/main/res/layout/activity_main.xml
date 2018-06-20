@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,7 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/orange_color_picker"
+        android:background="@color/main_background"
         android:orientation="vertical"
         tools:context="com.branch.www.screencapture.activity.MainActivity">
 
@@ -18,6 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@drawable/button_round"
+            android:backgroundTint="@color/main_background"
             android:elevation="0dp"
             android:onClick="startServiceBtnClicked"
             android:text="시작하기" />
@@ -25,6 +25,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/main_background"
             android:layout_gravity="center"
             android:background="@drawable/button_round"
             android:onClick="changeColorBtnClicked"
@@ -33,18 +34,21 @@
         <ImageButton
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:layout_gravity="center"
             android:scaleType="fitXY"
             android:src="@drawable/github_logo" />
 
         <ImageButton
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:layout_gravity="center"
             android:scaleType="fitXY"
             android:src="@drawable/toasty_logo" />
 
         <ImageButton
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:layout_gravity="center"
             android:scaleType="fitXY"
             android:src="@drawable/quad_flask_logo" />
 

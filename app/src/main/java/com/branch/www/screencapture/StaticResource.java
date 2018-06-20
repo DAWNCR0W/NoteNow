@@ -22,4 +22,8 @@ public class StaticResource {
     static final float SCREENSHOT_DROP_IN_MIN_SCALE = SCREENSHOT_SCALE * 0.725f;
     static final float SCREENSHOT_DROP_OUT_MIN_SCALE = SCREENSHOT_SCALE * 0.45f;
     static final float SCREENSHOT_DROP_OUT_MIN_SCALE_OFFSET = 0f;
+
+    public static final float BUTTON_CRITERIA = 0.24F;
+    public static final float BUTTON_DIVIDER_CRITERIA = 0.14F;
+    public static final float BUTTON_TOUCH_X = 0.019F;
 }
