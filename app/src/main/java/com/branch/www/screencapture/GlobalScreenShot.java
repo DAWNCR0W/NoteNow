@@ -22,7 +22,16 @@ import android.view.WindowManager;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
 
-import static com.branch.www.screencapture.StaticResource.*;
+import static com.branch.www.screencapture.StaticResource.BACKGROUND_ALPHA;
+import static com.branch.www.screencapture.StaticResource.SCREENSHOT_DROP_IN_DURATION;
+import static com.branch.www.screencapture.StaticResource.SCREENSHOT_DROP_IN_MIN_SCALE;
+import static com.branch.www.screencapture.StaticResource.SCREENSHOT_DROP_OUT_DELAY;
+import static com.branch.www.screencapture.StaticResource.SCREENSHOT_DROP_OUT_DURATION;
+import static com.branch.www.screencapture.StaticResource.SCREENSHOT_DROP_OUT_MIN_SCALE;
+import static com.branch.www.screencapture.StaticResource.SCREENSHOT_DROP_OUT_MIN_SCALE_OFFSET;
+import static com.branch.www.screencapture.StaticResource.SCREENSHOT_DROP_OUT_SCALE_DURATION;
+import static com.branch.www.screencapture.StaticResource.SCREENSHOT_FLASH_TO_PEAK_DURATION;
+import static com.branch.www.screencapture.StaticResource.SCREENSHOT_SCALE;
 
 /**
  * TODO: - Performance when over gl surfaces? Ie. Gallery - what do we say in the Toast? Which icon
@@ -142,6 +151,7 @@ public class GlobalScreenShot {
      * Starts the animation after taking the screenshot
      */
     private void startAnimation(int w, int h) {
+
         // Add the view for the animation
         mScreenshotView.setImageBitmap(mScreenBitmap);
         mScreenshotLayout.requestFocus();

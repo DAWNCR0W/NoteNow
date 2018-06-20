@@ -18,18 +18,10 @@ import java.util.Objects;
 
 public class PropertiesFragment extends BottomSheetDialogFragment implements SeekBar.OnSeekBarChangeListener {
 
-    public PropertiesFragment() {
-        // Required empty public constructor
-    }
-
     private Properties mProperties;
 
-    public interface Properties {
-        void onColorChanged(int colorCode);
-
-        void onOpacityChanged(int opacity);
-
-        void onBrushSizeChanged(int brushSize);
+    public PropertiesFragment() {
+        // Required empty public constructor
     }
 
     @Override
@@ -92,11 +84,17 @@ public class PropertiesFragment extends BottomSheetDialogFragment implements See
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
+    }
 
+    public interface Properties {
+        void onColorChanged(int colorCode);
+
+        void onOpacityChanged(int opacity);
+
+        void onBrushSizeChanged(int brushSize);
     }
 }

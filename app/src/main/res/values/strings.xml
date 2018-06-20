@@ -15,4 +15,6 @@
     <string name="done">완료</string>
     <string name="alpha">투명도</string>
     <string name="size">크기</string>
+    <string name="change_button_color">버튼 색상 변경하기</string>
+    <string name="start">시작하기</string>
 </resources>

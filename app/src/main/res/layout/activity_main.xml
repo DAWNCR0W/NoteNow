@@ -20,35 +20,50 @@
             android:backgroundTint="@color/main_background"
             android:elevation="0dp"
             android:onClick="startServiceBtnClicked"
-            android:text="시작하기" />
+            android:text="@string/start" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/main_background"
             android:layout_gravity="center"
             android:background="@drawable/button_round"
+            android:backgroundTint="@color/main_background"
             android:onClick="changeColorBtnClicked"
-            android:text="버튼 색상 변경하기" />
+            android:text="@string/change_button_color" />
 
         <ImageButton
+            android:id="@+id/github"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
+            android:onClick="goGithub"
             android:scaleType="fitXY"
             android:src="@drawable/github_logo" />
 
         <ImageButton
+            android:id="@+id/screen_capture"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
+            android:onClick="getScreenCapture"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_camera_alt_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/toasty"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:onClick="goToasty"
             android:scaleType="fitXY"
             android:src="@drawable/toasty_logo" />
 
         <ImageButton
+            android:id="@+id/quad_flask"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
+            android:onClick="goQuadFlask"
             android:scaleType="fitXY"
             android:src="@drawable/quad_flask_logo" />
 

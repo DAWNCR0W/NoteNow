@@ -17,6 +17,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+/**
+ * @author dawncrow
+ */
 public class ImageManage extends Thread {
     private Image[] params;
     private Context context;

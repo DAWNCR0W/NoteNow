@@ -45,6 +45,9 @@ import static com.branch.www.screencapture.StaticResource.CAMERA_REQUEST;
 import static com.branch.www.screencapture.StaticResource.PICK_REQUEST;
 import static com.branch.www.screencapture.StaticResource.READ_WRITE_STORAGE;
 
+/**
+ * @author dawncrow
+ */
 public class PaintActivity extends BaseActivity implements GlobalScreenShot.onScreenShotListener,
         OnPhotoEditorListener,
         View.OnClickListener,
@@ -53,14 +56,12 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
         StickerFragment.StickerListener {
 
     private static final String TAG = PaintActivity.class.getSimpleName();
-
+    PhotoEditorView mPhotoEditorView;
     private PhotoEditor mPhotoEditor;
     private PropertiesFragment mPropertiesFragment;
     private EmojiFragment mEmojiFragment;
     private StickerFragment mStickerFragment;
     private TextView mTxtCurrentTool;
-
-    PhotoEditorView mPhotoEditorView;
 
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, PaintActivity.class);
@@ -71,6 +72,7 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         stopService(new Intent(PaintActivity.this, FloatWindows.class));
         makeFullScreen();
         setContentView(R.layout.activity_edit_image);
@@ -90,7 +92,7 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
 
 
         mPhotoEditor = new PhotoEditor.Builder(this, mPhotoEditorView)
-                .setPinchTextScalable(true) // set flag to make text scalable when pinch
+                .setPinchTextScalable(true)
                 .setDefaultTextTypeface(mTextRobotoTf)
                 .setDefaultEmojiTypeface(mEmojiTypeFace)
                 .build(); // build photo editor sdk
@@ -376,6 +378,7 @@ public class PaintActivity extends BaseActivity implements GlobalScreenShot.onSc
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         startService(new Intent(PaintActivity.this, FloatWindows.class));
     }
 }

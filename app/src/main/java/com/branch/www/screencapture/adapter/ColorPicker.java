@@ -32,6 +32,23 @@ public class ColorPicker extends RecyclerView.Adapter<ColorPicker.ViewHolder> {
         this.inflater = LayoutInflater.from(context);
     }
 
+    private static List<Integer> getDefaultColors(Context context) {
+        ArrayList<Integer> colorPickerColors = new ArrayList<>();
+        colorPickerColors.add(ContextCompat.getColor(context, R.color.blue_color_picker));
+        colorPickerColors.add(ContextCompat.getColor(context, R.color.brown_color_picker));
+        colorPickerColors.add(ContextCompat.getColor(context, R.color.green_color_picker));
+        colorPickerColors.add(ContextCompat.getColor(context, R.color.orange_color_picker));
+        colorPickerColors.add(ContextCompat.getColor(context, R.color.red_color_picker));
+        colorPickerColors.add(ContextCompat.getColor(context, R.color.black));
+        colorPickerColors.add(ContextCompat.getColor(context, R.color.red_orange_color_picker));
+        colorPickerColors.add(ContextCompat.getColor(context, R.color.sky_blue_color_picker));
+        colorPickerColors.add(ContextCompat.getColor(context, R.color.violet_color_picker));
+        colorPickerColors.add(ContextCompat.getColor(context, R.color.white));
+        colorPickerColors.add(ContextCompat.getColor(context, R.color.yellow_color_picker));
+        colorPickerColors.add(ContextCompat.getColor(context, R.color.yellow_green_color_picker));
+        return colorPickerColors;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -53,6 +70,10 @@ public class ColorPicker extends RecyclerView.Adapter<ColorPicker.ViewHolder> {
         this.onColorPickerClickListener = onColorPickerClickListener;
     }
 
+    public interface OnColorPickerClickListener {
+        void onColorPickerClickListener(int colorCode);
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
         View colorPickerView;
 
@@ -68,26 +89,5 @@ public class ColorPicker extends RecyclerView.Adapter<ColorPicker.ViewHolder> {
                 }
             });
         }
-    }
-
-    public interface OnColorPickerClickListener {
-        void onColorPickerClickListener(int colorCode);
-    }
-
-    private static List<Integer> getDefaultColors(Context context) {
-        ArrayList<Integer> colorPickerColors = new ArrayList<>();
-        colorPickerColors.add(ContextCompat.getColor(context, R.color.blue_color_picker));
-        colorPickerColors.add(ContextCompat.getColor(context, R.color.brown_color_picker));
-        colorPickerColors.add(ContextCompat.getColor(context, R.color.green_color_picker));
-        colorPickerColors.add(ContextCompat.getColor(context, R.color.orange_color_picker));
-        colorPickerColors.add(ContextCompat.getColor(context, R.color.red_color_picker));
-        colorPickerColors.add(ContextCompat.getColor(context, R.color.black));
-        colorPickerColors.add(ContextCompat.getColor(context, R.color.red_orange_color_picker));
-        colorPickerColors.add(ContextCompat.getColor(context, R.color.sky_blue_color_picker));
-        colorPickerColors.add(ContextCompat.getColor(context, R.color.violet_color_picker));
-        colorPickerColors.add(ContextCompat.getColor(context, R.color.white));
-        colorPickerColors.add(ContextCompat.getColor(context, R.color.yellow_color_picker));
-        colorPickerColors.add(ContextCompat.getColor(context, R.color.yellow_green_color_picker));
-        return colorPickerColors;
     }
 }

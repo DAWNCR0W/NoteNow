@@ -26,7 +26,8 @@ import com.branch.www.screencapture.adapter.ColorPicker;
 import java.util.Objects;
 
 /**
- * Created by Burhanuddin Rashid on 1/16/2018.
+ * @author Burhanuddin Rashid
+ * @date 1/16/2018
  */
 
 public class TextEditorDialogFragment extends DialogFragment {
@@ -38,11 +39,6 @@ public class TextEditorDialogFragment extends DialogFragment {
     private InputMethodManager mInputMethodManager;
     private int mColorCode;
     private TextEditor mTextEditor;
-
-    public interface TextEditor {
-        void onDone(String inputText, int colorCode);
-    }
-
 
     //Show dialog with provide text and text color
     public static TextEditorDialogFragment show(@NonNull AppCompatActivity appCompatActivity,
@@ -121,11 +117,14 @@ public class TextEditorDialogFragment extends DialogFragment {
                 }
             }
         });
-
     }
 
     //Callback to listener if user is done with text editing
     public void setOnTextEditorListener(TextEditor textEditor) {
         mTextEditor = textEditor;
+    }
+
+    public interface TextEditor {
+        void onDone(String inputText, int colorCode);
     }
 }

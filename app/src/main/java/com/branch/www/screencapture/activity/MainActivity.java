@@ -31,10 +31,22 @@ import static com.branch.www.screencapture.StaticResource.REQUEST_MEDIA_PROJECTI
  */
 public class MainActivity extends FragmentActivity {
 
+    private static boolean hasReadWritePermissions(Context context, String... permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
     }
 
@@ -49,20 +61,16 @@ public class MainActivity extends FragmentActivity {
                 getSystemService(Context.MEDIA_PROJECTION_SERVICE);
 
         if (mediaProjectionManager != null) {
-
             startActivityForResult(mediaProjectionManager.createScreenCaptureIntent(),
                     REQUEST_MEDIA_PROJECTION);
         }
 
         if (!hasReadWritePermissions(MainActivity.this, permissions)
                 || !Settings.canDrawOverlays(this)) {
-
             Toasty.warning(this, "앱 실행에 필요한 권한을 허용해 주세요!").show();
-
             ActivityCompat.requestPermissions(MainActivity.this, permissions, REQUEST);
 
             if (!Settings.canDrawOverlays(this)) {
-
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                         Uri.parse("package:" + getPackageName()));
 
@@ -92,45 +100,28 @@ public class MainActivity extends FragmentActivity {
 
     }
 
-    private static boolean hasReadWritePermissions(Context context, String... permissions) {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
-
-            for (String permission : permissions) {
-
-                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     public void startServiceBtnClicked(View view) {
-
         requestCapturePermission();
     }
 
     public void changeColorBtnClicked(View view) {
-
         ColorPickerDialogBuilder
                 .with(MainActivity.this)
                 .setTitle("버튼 색상을 선택하세요")
                 .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                 .density(12)
-                .setOnColorSelectedListener(new OnColorSelectedListener() {
-                    @Override
-                    public void onColorSelected(int i) {
-
-                        FloatWindows.buttonTintColor = i;
-                        Toasty.custom(MainActivity.this,
-                                "색상이 변경되었습니다",
-                                getResources().getDrawable(R.drawable.check, null),
-                                i,
-                                Toast.LENGTH_SHORT, false, true).show();
-                    }
-                })
+                .setOnColorSelectedListener(
+                        new OnColorSelectedListener() {
+                            @Override
+                            public void onColorSelected(int i) {
+                                FloatWindows.buttonTintColor = i;
+                                Toasty.custom(MainActivity.this,
+                                        "색상이 변경되었습니다",
+                                        getResources().getDrawable(R.drawable.check, null),
+                                        i,
+                                        Toast.LENGTH_SHORT, false, true).show();
+                            }
+                        })
                 .setPositiveButton("확인", new ColorPickerClickListener() {
 
                     @Override
@@ -147,5 +138,25 @@ public class MainActivity extends FragmentActivity {
                 })
                 .build()
                 .show();
+    }
+
+    public void goGithub(View view) {
+        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/DAWNCR0W/NoteNow"));
+        startActivity(i);
+    }
+
+    public void goToasty(View view) {
+        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/GrenderG/Toasty"));
+        startActivity(i);
+    }
+
+    public void goQuadFlask(View view) {
+        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/QuadFlask/colorpicker"));
+        startActivity(i);
+    }
+
+    public void getScreenCapture(View view) {
+        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/goodbranch/ScreenCapture"));
+        startActivity(i);
     }
 }

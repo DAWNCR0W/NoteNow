@@ -44,6 +44,7 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
         switch (requestCode) {
             case READ_WRITE_STORAGE:
                 isPermissionGranted(grantResults[0] == PackageManager.PERMISSION_GRANTED, permissions[0]);
@@ -69,6 +70,7 @@ public class BaseActivity extends AppCompatActivity {
 
     void showSnackbar(@NonNull String message) {
         View view = findViewById(android.R.id.content);
+
         if (view != null) {
             Toasty.success(this, message).show();
         } else {
